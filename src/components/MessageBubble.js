@@ -1,10 +1,11 @@
+// src/components/MessageBubble.js
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'; // GitHub-flavored markdown (tables, strikethrough, etc.)
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'; // For syntax highlighting
 import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Syntax highlighting theme
 import '../styles/MessageBubble.css';
-import botAvatar from '../assets/bot-avatar.png';  // Import the avatar image
+import botAvatar from '../assets/bot-avatar.png';
 
 const MessageBubble = ({ message, role }) => {
     const isUser = role === 'user';
