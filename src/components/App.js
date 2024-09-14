@@ -1,7 +1,5 @@
 // src/components/App.js
-import React, { useEffect, useState } from 'react';
-import Header from './Header';
-import Footer from './Footer';
+import React, {useEffect, useState} from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
@@ -235,7 +233,6 @@ function App() {
 
     return (
         <div className="App">
-            <Header />
             <div className="main-content">
                 <Sidebar
                     conversations={conversations}
@@ -250,7 +247,6 @@ function App() {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 }
