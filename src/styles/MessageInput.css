@@ -1,0 +1,51 @@
+/* Ensure MessageInput shares the same width as the chat window */
+.message-input {
+    display: flex;
+    padding: 15px;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    align-items: center;
+    width: 100%; /* Full width of parent container */
+    max-width: 800px; /* Match the max-width of the conversation window */
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0 auto; /* Center align */
+    padding-bottom: 15px; /* Removed unnecessary padding */
+}
+
+.message-input textarea {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 16px;
+    resize: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    background-color: #f7f7f8;
+    min-height: 40px;
+    box-sizing: border-box;
+}
+
+.message-input textarea:focus {
+    outline: none;
+    border-color: #007aff;
+}
+
+.message-input button {
+    margin-left: 15px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #007aff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.message-input button:hover {
+    background-color: #005bb5;
+}
