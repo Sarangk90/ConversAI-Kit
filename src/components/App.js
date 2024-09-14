@@ -1,5 +1,4 @@
-// src/components/App.js
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
@@ -11,6 +10,7 @@ function App() {
     const [currentConversationId, setCurrentConversationId] = useState(generateUniqueId());
     const [currentConversationName, setCurrentConversationName] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    let accumulatedChunk = ''; // Accumulate message chunks here
 
     useEffect(() => {
         fetchConversationsFromBackend();
@@ -53,30 +53,16 @@ function App() {
         return message.length > 20 ? message.substring(0, 20) + '...' : message;
     };
 
-    useEffect(() => {
-        if (messages.length > 0) {
-            const conversation = {
-                conversation_id: currentConversationId,
-                conversation_name: currentConversationName || 'New Conversation',
-                messages: messages,
-            };
-            saveConversationToBackend(conversation);
+    // Debounce function for smoother updates
+    const debounce = (func, delay) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), delay);
+        };
+    };
 
-            setConversations((prevConversations) => {
-                const index = prevConversations.findIndex(
-                    (conv) => conv.conversation_id === currentConversationId
-                );
-
-                if (index !== -1) {
-                    const updatedConversations = [...prevConversations];
-                    updatedConversations[index] = conversation;
-                    return updatedConversations;
-                } else {
-                    return [...prevConversations, conversation];
-                }
-            });
-        }
-    }, [messages, currentConversationName]);
+    const debouncedSetMessages = debounce(setMessages, 100);  // Update every 100ms
 
     const handleSend = async (messageText) => {
         const userMessage = { role: 'user', content: messageText };
@@ -133,26 +119,25 @@ function App() {
             const decoder = new TextDecoder('utf-8');
 
             let done = false;
-            let accumulatedChunk = '';
 
             while (!done) {
                 const { value, done: doneReading } = await reader.read();
                 done = doneReading;
+
                 if (value) {
                     const chunkValue = decoder.decode(value);
                     accumulatedChunk += chunkValue;
 
-                    // Process any complete events in the accumulated chunk
+                    // Process complete events in the accumulated chunk
                     const events = parseSSE(accumulatedChunk);
 
                     events.forEach((event) => {
                         if (event.data && event.data.content) {
                             assistantMessage.content += event.data.content;
 
-                            // Update the messages state with the new content
-                            setMessages((prevMessages) => {
+                            // Use debounced updates to render content smoothly
+                            debouncedSetMessages((prevMessages) => {
                                 const updatedMessages = [...prevMessages];
-                                // Create a new object for the assistant message
                                 updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
                                 return updatedMessages;
                             });
@@ -162,7 +147,7 @@ function App() {
                         }
                     });
 
-                    // Remove processed events from accumulatedChunk
+                    // Clear out processed events
                     accumulatedChunk = removeProcessedEvents(accumulatedChunk);
                 }
             }
@@ -178,9 +163,9 @@ function App() {
     function parseSSE(text) {
         const events = [];
         const lines = text.split('\n');
-
         let event = {};
-        for (let line of lines) {
+
+        lines.forEach((line) => {
             if (line.startsWith('data: ')) {
                 const data = line.substring(6).trim();
                 if (data) {
@@ -200,7 +185,8 @@ function App() {
                     event = {};
                 }
             }
-        }
+        });
+
         return events;
     }
 

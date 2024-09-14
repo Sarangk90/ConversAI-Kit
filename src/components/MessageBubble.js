@@ -1,4 +1,3 @@
-// src/components/MessageBubble.js
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'; // GitHub-flavored markdown (tables, strikethrough, etc.)
@@ -7,7 +6,7 @@ import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
 import '../styles/MessageBubble.css';
 import botAvatar from '../assets/bot-avatar.png';
 
-const MessageBubble = ({ message, role }) => {
+const MessageBubble = React.memo(({ message, role }) => {
     const isUser = role === 'user';
 
     return (
@@ -49,6 +48,6 @@ const MessageBubble = ({ message, role }) => {
             </div>
         </div>
     );
-};
+});
 
 export default MessageBubble;
