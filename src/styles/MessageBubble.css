@@ -1,0 +1,101 @@
+/* src/styles/MessageBubble.css */
+
+/* Handle longer content gracefully */
+.message-bubble-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    word-wrap: break-word; /* Wraps long words */
+    overflow-wrap: break-word; /* Handles unbreakable long text */
+    width: 100%;
+}
+
+/* General message bubble styling for both bot and user */
+.message-bubble {
+    max-width: 80%; /* Restrict the width */
+    padding: 10px 14px;
+    border-radius: 18px;
+    background-color: #f1f1f1;
+    color: #000;
+    font-size: 15px;
+    line-height: 1.4;
+    font-family: Arial, sans-serif;
+    word-wrap: break-word; /* Ensure that long words are wrapped */
+    overflow-wrap: break-word; /* Handle unbreakable text */
+}
+
+/* User messages */
+.message-bubble.user {
+    background-color: #e1ffc7;
+    margin-left: auto;
+    border-bottom-right-radius: 2px;
+}
+
+/* Bot messages */
+.message-bubble.bot {
+    background-color: #f1f1f1;
+    margin-right: 10px;
+    border-bottom-left-radius: 2px;
+    max-width: 80%; /* Bot messages should also have a max width */
+}
+
+/* Style the code block inside the bot message */
+.message-bubble.bot code {
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f5f5f5; /* Light background for code block */
+    max-width: 100%; /* Take up the full width */
+    overflow-x: auto; /* Add horizontal scrolling */
+    white-space: pre-wrap; /* Allow line wrapping */
+    font-family: 'Courier New', Courier, monospace; /* Monospace font */
+    font-size: 14px; /* Adjust font size */
+}
+
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    align-self: center;
+}
+
+/* Code block scroll and formatting */
+.message-bubble code {
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre; /* Prevent wrapping for code blocks */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+
+
+.message-bubble pre {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+/* Additional styling for code blocks */
+pre {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 12px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+code {
+    background-color: #eee;
+    padding: 2px 6px;
+    border-radius: 4px;
+}

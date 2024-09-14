@@ -1,0 +1,17 @@
+/* src/styles/ChatWindow.css */
+
+.chat-window {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--background-color);
+}
+
+.chat-window::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}

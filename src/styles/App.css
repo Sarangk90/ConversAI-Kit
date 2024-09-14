@@ -1,0 +1,114 @@
+/* Main container layout */
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f7f7f8; /* Light background for chat */
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 60px); /* Leave space for header */
+}
+
+/* Parent container for chat window and input */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    flex: 1;
+    background-color: #ffffff;
+    overflow: hidden; /* Prevent overflow from large content */
+}
+
+/* Wrapper for both chat window and input */
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px; /* Limit width for better readability */
+    height: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding-bottom: 20px; /* Reduce unnecessary padding */
+}
+
+/* Chat window to hold conversation */
+.chat-window {
+    flex-grow: 1;
+    width: 100%; /* Full width inside wrapper */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin-bottom: 10px; /* Add spacing from input */
+}
+
+/* Ensure scrollbar works properly */
+.chat-window::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+/* Styling for individual messages */
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.message .user-message,
+.message .bot-message {
+    max-width: 75%; /* Limit message width */
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* User message style */
+.user-message {
+    background-color: #dcf8c6; /* Light green for user messages */
+    align-self: flex-end; /* Align to the right */
+    margin-left: auto; /* Push it to the right */
+    color: #333;
+}
+
+/* Bot message style */
+.bot-message {
+    background-color: #f1f0f0; /* Light gray for bot messages */
+    align-self: flex-start; /* Align to the left */
+    margin-right: auto; /* Push it to the left */
+    color: #333;
+}
+
+/* Chat window width constraints for better readability */
+.chat-window {
+    max-width: 800px; /* Limit the width of the chat window */
+    width: 100%;
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    margin-bottom: 80px; /* Make space for the input box */
+}
+
+/* Footer alignment */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #f7f7f8;
+    font-size: 12px;
+    color: #666;
+}
