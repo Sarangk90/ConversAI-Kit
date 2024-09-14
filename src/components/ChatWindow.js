@@ -1,7 +1,7 @@
 // src/components/ChatWindow.js
 import React from 'react';
-import MessageBubble from './MessageBubble'; // Import the MessageBubble component
-import '../styles/ChatWindow.css'; // Ensure this is correctly linked
+import MessageBubble from './MessageBubble';
+import '../styles/ChatWindow.css';
 
 const ChatWindow = ({ messages, isTyping }) => {
     return (
