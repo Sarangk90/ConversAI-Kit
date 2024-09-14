@@ -16,8 +16,7 @@ def get_bot_response(user_message):
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message}
-            ],
-            max_tokens=150
+            ]
         )
 
         # Extract the assistant's response
@@ -41,7 +40,6 @@ def get_bot_response_stream(messages):
         response = openai.ChatCompletion.create(
             model="gpt-4o",
             messages=messages,
-            max_tokens=150,
             stream=True
         )
         # response is an iterator
