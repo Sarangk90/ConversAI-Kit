@@ -1,3 +1,4 @@
+// src/components/App.js
 import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
@@ -113,7 +114,7 @@ function App() {
         setIsTyping(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/chat', {
+            const response = await fetch('http://localhost:5000/api/stream_chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -122,22 +123,96 @@ function App() {
                 }),
             });
 
-            const data = await response.json();
-            setIsTyping(false);
-
-            if (data.reply) {
-                const botMessage = { role: 'assistant', content: data.reply };
-                setMessages((prevMessages) => [...prevMessages, botMessage]);
-            } else if (data.error) {
-                console.error(data.error);
-                alert('Error: ' + data.error);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+
+            // Create a new assistant message and add it to messages
+            let assistantMessage = { role: 'assistant', content: '' };
+            setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+
+            let done = false;
+            let accumulatedChunk = '';
+
+            while (!done) {
+                const { value, done: doneReading } = await reader.read();
+                done = doneReading;
+                if (value) {
+                    const chunkValue = decoder.decode(value);
+                    accumulatedChunk += chunkValue;
+
+                    // Process any complete events in the accumulated chunk
+                    const events = parseSSE(accumulatedChunk);
+
+                    events.forEach((event) => {
+                        if (event.data && event.data.content) {
+                            assistantMessage.content += event.data.content;
+
+                            // Update the messages state with the new content
+                            setMessages((prevMessages) => {
+                                const updatedMessages = [...prevMessages];
+                                // Create a new object for the assistant message
+                                updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
+                                return updatedMessages;
+                            });
+                        } else if (event.data && event.data.error) {
+                            console.error('Error from server:', event.data.error);
+                            alert('Error from server: ' + event.data.error);
+                        }
+                    });
+
+                    // Remove processed events from accumulatedChunk
+                    accumulatedChunk = removeProcessedEvents(accumulatedChunk);
+                }
+            }
+
+            setIsTyping(false);
         } catch (error) {
             setIsTyping(false);
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
         }
     };
+
+    function parseSSE(text) {
+        const events = [];
+        const lines = text.split('\n');
+
+        let event = {};
+        for (let line of lines) {
+            if (line.startsWith('data: ')) {
+                const data = line.substring(6).trim();
+                if (data) {
+                    try {
+                        const jsonData = JSON.parse(data);
+                        event.data = jsonData;
+                    } catch (e) {
+                        console.error('Failed to parse JSON:', e);
+                    }
+                }
+            } else if (line.startsWith('event: ')) {
+                event.event = line.substring(7).trim();
+            } else if (line === '') {
+                // End of an event
+                if (Object.keys(event).length > 0) {
+                    events.push(event);
+                    event = {};
+                }
+            }
+        }
+        return events;
+    }
+
+    function removeProcessedEvents(text) {
+        const lastEventIndex = text.lastIndexOf('\n\n');
+        if (lastEventIndex !== -1) {
+            return text.substring(lastEventIndex + 2);
+        }
+        return text;
+    }
 
     const createNewConversation = () => {
         const newConversationId = generateUniqueId();
