@@ -1,17 +1,21 @@
-/* src/styles/ChatWindow.css */
-
+/* Chat Window */
 .chat-window {
     flex-grow: 1;
     width: 100%; /* Full width inside wrapper */
+    max-width: 900px; /* Limit width for readability */
     padding: 20px;
-    background-color: var(--background-color);
+    background-color: var(--background-color); /* Maintain background color */
     border-radius: 8px;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Make chat window scrollable */
+    box-shadow: none;
+    overflow-y: auto;
     box-sizing: border-box;
-    margin-bottom: 20px; /* Add spacing from input */
+    margin-bottom: 80px;
+    margin-left: auto; /* Center the chat window */
+    margin-right: auto;
+    scrollbar-width: thin; /* Keep the scrollbar on the right */
 }
 
+/* Scrollbar styling */
 .chat-window::-webkit-scrollbar {
     width: 8px;
 }
