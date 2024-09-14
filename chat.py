@@ -28,6 +28,31 @@ def get_bot_response(user_message):
     except Exception as e:
         return str(e)
 
+
+def get_bot_response_stream(messages):
+    try:
+        # Ensure system prompt is included
+        system_prompt = {"role": "system", "content": "You are a helpful assistant."}
+
+        if messages[0]['role'] != 'system':
+            messages.insert(0, system_prompt)
+
+        # Call the GPT-4 model with stream=True
+        response = openai.ChatCompletion.create(
+            model="gpt-4o",
+            messages=messages,
+            max_tokens=150,
+            stream=True
+        )
+        # response is an iterator
+        for chunk in response:
+            # Each chunk may have 'choices' and 'delta'
+            chunk_content = chunk['choices'][0]['delta'].get('content', '')
+            if chunk_content:
+                # Yield a dictionary with additional metadata if needed
+                yield {'content': chunk_content}
+    except Exception as e:
+        yield {'error': str(e)}
 # Function to generate conversation name
 def generate_conversation_name(first_user_message):
     try:

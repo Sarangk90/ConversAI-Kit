@@ -1,10 +1,11 @@
 # app.py
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import json
 
-from chat import get_bot_response, generate_conversation_name
+from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
+
+from chat import get_bot_response, generate_conversation_name, get_bot_response_stream
 from database import init_db, save_conversation, get_conversations
 
 app = Flask(__name__)
@@ -12,6 +13,7 @@ CORS(app)
 
 # Initialize the database when the app starts
 init_db()
+
 
 # Route to handle chat interaction
 @app.route('/api/chat', methods=['POST'])
@@ -38,6 +40,7 @@ def chat():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 # Route to generate conversation name
 @app.route('/api/generate_name', methods=['POST'])
 def generate_conversation_name_route():
@@ -58,6 +61,7 @@ def generate_conversation_name_route():
 
     return jsonify({'name': conversation_name}), 200
 
+
 # Route to save a conversation
 @app.route('/api/conversations', methods=['POST'])
 def save_conversation_route():
@@ -76,6 +80,7 @@ def save_conversation_route():
     save_conversation(conversation_id, conversation_name, messages_json)
     return jsonify({'message': 'Conversation saved successfully'}), 201
 
+
 # Route to get all conversations
 @app.route('/api/conversations', methods=['GET'])
 def get_conversations_route():
@@ -84,6 +89,39 @@ def get_conversations_route():
         conv['messages'] = json.loads(conv['messages'])  # Convert JSON back to Python object
 
     return jsonify(conversations), 200
+
+
+@app.route('/api/stream_chat', methods=['POST'])
+def stream_chat():
+    try:
+        data = request.get_json()
+
+        # Extract conversation details
+        conversation_id = data.get('conversation_id')
+        messages = data.get('messages')
+
+        if not conversation_id or not messages or not isinstance(messages, list):
+            return jsonify({'error': 'Invalid conversation ID or messages'}), 400
+
+        # Get the bot's response generator
+        def generate():
+            for chunk in get_bot_response_stream(messages):
+                # Convert the chunk to a JSON-formatted string
+                json_data = json.dumps(chunk)
+                # SSE format: data: <message>\n\n
+                yield f"data: {json_data}\n\n"
+
+        # Set appropriate headers for SSE
+        headers = {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no'  # Disable buffering for Nginx
+        }
+
+        return Response(generate(), headers=headers)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
