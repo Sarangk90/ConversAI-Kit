@@ -4,12 +4,14 @@
     flex-direction: column;
     height: 100vh;
     background-color: #f7f7f8; /* Light background for chat */
+    overflow: hidden; /* Prevent page scroll */
 }
 
 .main-content {
     display: flex;
     flex: 1;
     height: calc(100vh - 60px); /* Leave space for header */
+    overflow: hidden; /* Prevent scrolling the whole page */
 }
 
 /* Parent container for chat window and input */
@@ -27,26 +29,23 @@
 .chat-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
-    max-width: 800px; /* Limit width for better readability */
+    max-width: 800px;
     height: 100%;
     margin: 0 auto;
-    box-sizing: border-box;
-    padding-bottom: 20px; /* Reduce unnecessary padding */
+    padding-bottom: 0; /* Ensure no extra padding at the bottom */
 }
 
-/* Chat window to hold conversation */
 .chat-window {
     flex-grow: 1;
-    width: 100%; /* Full width inside wrapper */
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     box-sizing: border-box;
-    margin-bottom: 10px; /* Add spacing from input */
+    margin-bottom: 0; /* Remove bottom margin */
 }
 
 /* Ensure scrollbar works properly */
