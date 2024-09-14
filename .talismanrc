@@ -1,0 +1,4 @@
+fileignoreconfig:
+- filename: chat.py
+  checksum: 4ede249edb929e937ac69b73a5df09b1f60eed1b057ee9a65dc17d7644f0e87a
+version: ""
