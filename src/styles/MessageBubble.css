@@ -99,3 +99,54 @@ code {
     padding: 2px 6px;
     border-radius: 4px;
 }
+
+/* Ensure tables within the message bubble are responsive and scrollable */
+.message-bubble table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling for wide tables */
+    display: block; /* Make the table scrollable */
+    white-space: nowrap; /* Prevent wrapping inside the table */
+}
+
+.message-bubble th, .message-bubble td {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.message-bubble th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.message-bubble tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* On smaller screens, stack the table rows */
+@media (max-width: 768px) {
+    .message-bubble table {
+        display: block;
+        overflow-x: auto; /* Ensure horizontal scrolling is available */
+    }
+
+    /* Stack cells for better readability on small screens */
+    .message-bubble td, .message-bubble th {
+        display: block;
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .message-bubble td::before, .message-bubble th::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+}
