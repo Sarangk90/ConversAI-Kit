@@ -27,11 +27,14 @@ const ChatWindow = ({ messages }) => {
     }
     return (
         <div className="chat-window" ref={chatWindowRef}>
-            {messages.map((message, index) => (
-                <MessageBubble key={index} message={message} role={message.role} />
-            ))}
+            <div className="chat-content">
+                {messages.map((message, index) => (
+                    <MessageBubble key={index} message={message} role={message.role} />
+                ))}
+            </div>
         </div>
     );
+
 };
 
 export default ChatWindow;

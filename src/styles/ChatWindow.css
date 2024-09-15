@@ -2,16 +2,14 @@
 .chat-window {
     flex-grow: 1;
     width: 100%; /* Full width inside wrapper */
-    max-width: 900px; /* Limit width for readability */
+    max-width: none; /* Allow chat window to take full available space */
     padding: 20px;
     background-color: #FAFBFC; /* Very light background color for readability */
     border-radius: 8px;
     box-shadow: none;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow vertical scrolling */
     box-sizing: border-box;
     margin-bottom: 80px;
-    margin-left: auto; /* Center the chat window */
-    margin-right: auto;
     scrollbar-width: thin; /* Keep the scrollbar on the right */
 }
 
@@ -25,6 +23,12 @@
     border-radius: 4px;
 }
 
+.chat-content {
+    max-width: 800px; /* Keep the content within best practice reading width */
+    margin: 0 auto; /* Center the content */
+    padding: 0 20px; /* Add padding to ensure space on smaller screens */
+    box-sizing: border-box;
+}
 /* Empty Chat Window State */
 .chat-window-empty {
     display: flex;
