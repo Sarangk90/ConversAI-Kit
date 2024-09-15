@@ -120,3 +120,26 @@
 .sidebar-content::-webkit-scrollbar-thumb:hover {
     background-color: #718096; /* Slightly brighter grey on hover */
 }
+
+/* Smooth transition for sidebar buttons */
+.sidebar button.conversation {
+    display: block;
+    background-color: transparent;
+    color: #E5E7EB;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+.sidebar button.conversation:hover {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease-in-out;
+}
