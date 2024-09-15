@@ -24,3 +24,19 @@
     background-color: #ccc;
     border-radius: 4px;
 }
+
+.chat-window-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 18px;
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+
+.bot-avatar-empty {
+    width: 120px; /* Adjust the size as needed */
+    margin-bottom: 20px;
+}

@@ -10,12 +10,12 @@ body {
 .avatar {
     background-color: transparent; /* Ensure no background color */
     width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    height: 28px;
     object-fit: cover;
     margin-right: 12px;
+    margin-left: 2px;
     align-self: flex-start;
-    margin-top: 4px;
+    margin-top: 9px;
     flex-shrink: 0;
 }
 

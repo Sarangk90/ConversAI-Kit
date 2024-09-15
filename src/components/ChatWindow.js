@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import '../styles/ChatWindow.css';
+import botAvatar from '../assets/bot-avatar.png'; // Adjust path according to your file structure
 
 const ChatWindow = ({ messages }) => {
     const chatWindowRef = useRef(null);
@@ -14,10 +15,16 @@ const ChatWindow = ({ messages }) => {
         }
     }, [messages]);
 
-    if (!messages || !Array.isArray(messages)) {
-        return <div>No messages yet</div>; // Fallback when no messages are available
+    if (!messages || messages.length === 0) {
+        return (
+            <div className="chat-window-empty">
+                <div className="empty-state-content">
+                    <img src={botAvatar} alt="Bot Avatar" className="bot-avatar-empty"/>
+                    <p>Select a conversation or start a new one to begin chatting!</p>
+                </div>
+            </div>
+        );
     }
-
     return (
         <div className="chat-window" ref={chatWindowRef}>
             {messages.map((message, index) => (
