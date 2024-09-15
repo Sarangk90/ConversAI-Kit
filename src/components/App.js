@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
 import '../styles/App.css';
+import {useLocation, useNavigate} from "react-router-dom";
 
 function App() {
     // State variables
@@ -13,6 +14,19 @@ function App() {
     const [currentConversationName, setCurrentConversationName] = useState('');
 
     const messageInputRef = useRef(null);  // <-- Create the ref
+
+    const location = useLocation(); // Access the URL parameters
+    const navigate = useNavigate();   // To update the URL
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const conversationId = params.get('conversation_id');
+
+        if (conversationId) {
+            selectConversation(conversationId); // Load the conversation based on URL parameter
+        }
+    }, [location]);
+
 
     useEffect(() => {
         fetchConversationsFromBackend();
@@ -331,10 +345,15 @@ function App() {
         alert(`${customMessage}: ${error.message || error}`);
     };
 
+    useEffect(() => {
+        if (currentConversationId) {
+            navigate(`/?conversation_id=${currentConversationId}`);
+        }
+    }, [currentConversationId, navigate]);
+
     // Handle selecting a conversation
     const selectConversation = (conversationId) => {
         setCurrentConversationId(conversationId);
-        // Messages will be loaded in useEffect
     };
 
     // Handle creating a new conversation
