@@ -7,6 +7,7 @@ from flask_cors import CORS
 
 from chat import get_bot_response, generate_conversation_name, get_bot_response_stream
 from database import init_db, save_conversation, get_conversations, get_conversation
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -71,31 +72,44 @@ def save_conversation_route():
     conversation_name = data.get('conversation_name')
     messages = data.get('messages')
 
-    if not conversation_id or not messages or not conversation_name:
+    if not conversation_id or not conversation_name or not messages:
         return jsonify({'error': 'Missing conversation ID, name, or messages'}), 400
 
     # Convert messages to JSON string for storage
     messages_json = json.dumps(messages)
 
-    save_conversation(conversation_id, conversation_name, messages_json)
-    return jsonify({'message': 'Conversation saved successfully'}), 201
+    # Set the current timestamp as last_updated in the backend
+    last_updated = datetime.utcnow().isoformat()
+
+    # Save the conversation (last_updated handled in the database)
+    save_conversation(conversation_id, conversation_name, messages_json, last_updated)
+
+    return jsonify({
+        'message': 'Conversation saved successfully',
+        'conversation_id': conversation_id,
+        'conversation_name': conversation_name,
+        'last_updated': last_updated  # Return the generated lastUpdated timestamp to the frontend
+    }), 201
 
 
-# Route to get all conversations (IDs and names only)
+# Route to get all conversations (IDs, names, and lastUpdated)
 @app.route('/api/conversations', methods=['GET'])
 def get_conversations_route():
     conversations = get_conversations()
-    # Exclude messages from the response to keep it lightweight
+
+    # Prepare response excluding messages
     conversations_list = [
         {
             'conversation_id': conv['conversation_id'],
-            'conversation_name': conv['conversation_name']
+            'conversation_name': conv['conversation_name'],
+            'last_updated': conv['last_updated']
         }
         for conv in conversations
     ]
     return jsonify(conversations_list), 200
 
-# New endpoint to get messages for a specific conversation
+
+# Route to get messages for a specific conversation
 @app.route('/api/conversations/<conversation_id>', methods=['GET'])
 def get_conversation_messages(conversation_id):
     conversation = get_conversation(conversation_id)
@@ -105,6 +119,7 @@ def get_conversation_messages(conversation_id):
         return jsonify(conversation), 200
     else:
         return jsonify({'error': 'Conversation not found'}), 404
+
 
 @app.route('/api/stream_chat', methods=['POST'])
 def stream_chat():
