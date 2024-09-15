@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 
 from chat import get_bot_response, generate_conversation_name, get_bot_response_stream
-from database import init_db, save_conversation, get_conversations
+from database import init_db, save_conversation, get_conversations, get_conversation
 
 app = Flask(__name__)
 CORS(app)
@@ -81,15 +81,30 @@ def save_conversation_route():
     return jsonify({'message': 'Conversation saved successfully'}), 201
 
 
-# Route to get all conversations
+# Route to get all conversations (IDs and names only)
 @app.route('/api/conversations', methods=['GET'])
 def get_conversations_route():
     conversations = get_conversations()
-    for conv in conversations:
-        conv['messages'] = json.loads(conv['messages'])  # Convert JSON back to Python object
+    # Exclude messages from the response to keep it lightweight
+    conversations_list = [
+        {
+            'conversation_id': conv['conversation_id'],
+            'conversation_name': conv['conversation_name']
+        }
+        for conv in conversations
+    ]
+    return jsonify(conversations_list), 200
 
-    return jsonify(conversations), 200
-
+# New endpoint to get messages for a specific conversation
+@app.route('/api/conversations/<conversation_id>', methods=['GET'])
+def get_conversation_messages(conversation_id):
+    conversation = get_conversation(conversation_id)
+    if conversation:
+        # Convert messages from JSON string to Python object
+        conversation['messages'] = json.loads(conversation['messages'])
+        return jsonify(conversation), 200
+    else:
+        return jsonify({'error': 'Conversation not found'}), 404
 
 @app.route('/api/stream_chat', methods=['POST'])
 def stream_chat():

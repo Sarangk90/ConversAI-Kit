@@ -63,3 +63,22 @@ def get_conversations():
 
     conn.close()
     return conversations
+
+def get_conversation(conversation_id):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT conversation_id, conversation_name, messages FROM conversations WHERE conversation_id = ?', (conversation_id,))
+    row = cursor.fetchone()
+
+    conn.close()
+
+    if row:
+        conversation = {
+            'conversation_id': row[0],
+            'conversation_name': row[1],
+            'messages': row[2]
+        }
+        return conversation
+    else:
+        return None
