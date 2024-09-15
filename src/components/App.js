@@ -1,6 +1,6 @@
 // App.js
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
@@ -13,6 +13,8 @@ function App() {
     const [conversations, setConversations] = useState([]);
     const [currentConversationId, setCurrentConversationId] = useState(null);
     const [currentConversationName, setCurrentConversationName] = useState('');
+
+    const messageInputRef = useRef(null);  // <-- Create the ref
 
     useEffect(() => {
         fetchConversationsFromBackend();
@@ -144,157 +146,6 @@ function App() {
         }
     };
 
-    // Handle sending a message
-    // const handleSend = async (messageText) => {
-    //     const userMessage = { role: 'user', content: messageText };
-    //     let conversationId = currentConversationId;
-    //
-    //     // If there's no current conversation ID, create a new one
-    //     if (!conversationId) {
-    //         conversationId = generateUniqueId();
-    //         setCurrentConversationId(conversationId);
-    //     }
-    //
-    //     let conversationName = currentConversationName;
-    //
-    //     // If this is the first message, generate a conversation name
-    //     if (!conversationName || conversationName === 'New Conversation') {
-    //         try {
-    //             conversationName = await generateConversationName(messageText);
-    //             setCurrentConversationName(conversationName);
-    //         } catch (error) {
-    //             console.error('Error generating conversation name:', error);
-    //             conversationName = 'New Conversation';
-    //             setCurrentConversationName(conversationName);
-    //         }
-    //     }
-    //
-    //     // Prepare the updated messages
-    //     const prevMessages = messagesByConversation[conversationId] || [];
-    //     let updatedMessages = [...prevMessages, userMessage];
-    //
-    //     // Update messages for this conversation
-    //     setMessagesByConversation((prev) => ({
-    //         ...prev,
-    //         [conversationId]: updatedMessages,
-    //     }));
-    //
-    //     // Update messages if this is the current conversation
-    //     if (conversationId === currentConversationId) {
-    //         setMessages(updatedMessages);
-    //     }
-    //
-    //     // Save conversation to backend (with user's message)
-    //     saveConversationToBackend({
-    //         conversation_id: conversationId,
-    //         conversation_name: conversationName,
-    //         messages: updatedMessages,
-    //     });
-    //
-    //     const streamingConversationId = conversationId; // Capture the conversation ID at this moment
-    //
-    //     try {
-    //         // Start the streaming request
-    //         const response = await fetch('http://localhost:5000/api/stream_chat', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({
-    //                 conversation_id: streamingConversationId,
-    //                 messages: updatedMessages,
-    //             }),
-    //         });
-    //
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! Status: ${response.status}`);
-    //         }
-    //
-    //         let assistantMessage = { role: 'assistant', content: '' };
-    //
-    //         // Append assistant's message placeholder to updatedMessages
-    //         updatedMessages = [...updatedMessages, assistantMessage];
-    //
-    //         // Update messages for this conversation
-    //         setMessagesByConversation((prev) => ({
-    //             ...prev,
-    //             [streamingConversationId]: updatedMessages,
-    //         }));
-    //
-    //         // Update messages if this is the current conversation
-    //         if (streamingConversationId === currentConversationId) {
-    //             setMessages(updatedMessages);
-    //         }
-    //
-    //         const reader = response.body.getReader();
-    //         const decoder = new TextDecoder('utf-8');
-    //
-    //         let done = false;
-    //         let buffer = '';
-    //
-    //         while (!done) {
-    //             const { value, done: doneReading } = await reader.read();
-    //             done = doneReading;
-    //
-    //             if (value) {
-    //                 const chunkValue = decoder.decode(value);
-    //                 buffer += chunkValue;
-    //
-    //                 let lines = buffer.split('\n');
-    //
-    //                 for (let i = 0; i < lines.length - 1; i++) {
-    //                     const line = lines[i].trim();
-    //                     if (line.startsWith('data: ')) {
-    //                         const jsonStr = line.substring(6).trim();
-    //                         if (jsonStr) {
-    //                             try {
-    //                                 const data = JSON.parse(jsonStr);
-    //                                 if (data.content) {
-    //                                     assistantMessage.content += data.content;
-    //
-    //                                     // Update the assistant message in updatedMessages
-    //                                     updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
-    //
-    //                                     // Update messages for this conversation
-    //                                     setMessagesByConversation((prev) => ({
-    //                                         ...prev,
-    //                                         [streamingConversationId]: [...updatedMessages],
-    //                                     }));
-    //
-    //                                     // Update messages if this is the current conversation
-    //                                     if (streamingConversationId === currentConversationId) {
-    //                                         setMessages([...updatedMessages]);
-    //                                     }
-    //                                 } else if (data.finish) {
-    //                                     // Optionally handle finish_reason
-    //                                 } else if (data.error) {
-    //                                     console.error('Error from server:', data.error);
-    //                                     alert('Error from server: ' + data.error);
-    //                                     done = true;
-    //                                     break;
-    //                                 }
-    //                             } catch (e) {
-    //                                 console.error('Error parsing JSON:', e);
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //
-    //                 // Keep the incomplete part of the buffer
-    //                 buffer = lines[lines.length - 1];
-    //             }
-    //         }
-    //
-    //         // Save conversation to backend (with assistant's message)
-    //         saveConversationToBackend({
-    //             conversation_id: streamingConversationId,
-    //             conversation_name: conversationName,
-    //             messages: updatedMessages,
-    //         });
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //         alert('An error occurred. Please try again.');
-    //     }
-    // };
-
     // New function to handle updating UI state when user sends a message
     const updateUIWithUserMessage = (conversationId, userMessage, updatedMessages) => {
         // Update messages in the UI
@@ -372,7 +223,7 @@ function App() {
         try {
             const response = await fetch('http://localhost:5000/api/stream_chat', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     conversation_id: conversationId,
                     messages: updatedMessages,
@@ -383,7 +234,7 @@ function App() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            let assistantMessage = { role: 'assistant', content: '' };
+            let assistantMessage = {role: 'assistant', content: ''};
             updatedMessages.push(assistantMessage);
 
             // Throttled update for assistant message
@@ -397,7 +248,7 @@ function App() {
             let buffer = '';
 
             while (!done) {
-                const { value, done: doneReading } = await reader.read();
+                const {value, done: doneReading} = await reader.read();
                 done = doneReading;
 
                 if (value) {
@@ -421,7 +272,6 @@ function App() {
     };
 
 
-
 // New function to handle saving conversation to the backend
     const saveConversation = async (conversationId, conversationName, messages) => {
         try {
@@ -437,7 +287,7 @@ function App() {
 
 // Refactored handleSend method
     const handleSend = async (messageText) => {
-        const userMessage = { role: 'user', content: messageText };
+        const userMessage = {role: 'user', content: messageText};
         let conversationId = currentConversationId || generateUniqueId();
         let conversationName = currentConversationName;
 
@@ -504,6 +354,9 @@ function App() {
                 conversation_name: 'New Conversation',
             },
         ]);
+        if (messageInputRef.current) {
+            messageInputRef.current.focus();  // <-- Set focus to input
+        }
     };
 
 
@@ -521,7 +374,9 @@ function App() {
                         <ChatWindow
                             messages={messages}
                         />
-                        <MessageInput onSend={handleSend}/>
+                        <MessageInput onSend={handleSend}
+                                      inputRef={messageInputRef}
+                        />
                     </div>
                 </div>
             </div>

@@ -1,10 +1,11 @@
 // src/components/MessageInput.js
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import '../styles/MessageInput.css';
 
-const MessageInput = ({onSend}) => {
+const MessageInput = ({ onSend, inputRef }) => {
     const [input, setInput] = useState('');
-    const textareaRef = useRef(null);
+    const localTextareaRef = useRef(null);  // Always create a local ref
+    const textareaRef = inputRef || localTextareaRef;  // Conditionally use the passed ref or the local one
 
     const handleSend = () => {
         if (input.trim()) {
@@ -26,12 +27,12 @@ const MessageInput = ({onSend}) => {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
         }
-    }, [input]);
+    }, [input, textareaRef]);
 
     return (
         <div className="message-input">
             <textarea
-                ref={textareaRef}
+                ref={textareaRef}  // Always reference the textareaRef
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message here..."
