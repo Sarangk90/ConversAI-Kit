@@ -60,21 +60,30 @@
     padding-right: 5px;
 }
 
+/* Conversation group header styling */
+.conversation-group-header {
+    font-size: 14px;
+    font-weight: normal; /* Softer font weight for minimalistic look */
+    color: #a0aec0; /* Lighter gray for group headings */
+    margin: 12px 0 6px 0; /* More space above group headings */
+    padding-left: 10px; /* Align heading with conversation buttons */
+}
+
 /* Conversation Button Styling */
 .sidebar button.conversation {
     display: block;
     background-color: transparent;
     color: #e3e3e3;
     width: 100%; /* Full width of the container */
-    padding: 10px 12px;
+    padding: 8px 10px;
     border: none;
     border-radius: 6px;
     text-align: left;
     font-size: 15px;
     font-weight: 500;
-    margin-bottom: 8px; /* Space between each conversation */
+    margin-bottom: 4px; /* Space between each conversation */
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
     white-space: nowrap; /* Prevent long text wrapping */
     overflow: hidden;
     text-overflow: ellipsis;
