@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 from chat import get_bot_response, generate_conversation_name, get_bot_response_stream
 from database import init_db, save_conversation, get_conversations, get_conversation
-from datetime import datetime
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 CORS(app)
@@ -79,7 +79,8 @@ def save_conversation_route():
     messages_json = json.dumps(messages)
 
     # Set the current timestamp as last_updated in the backend
-    last_updated = datetime.utcnow().isoformat()
+    last_updated = datetime.now(timezone.utc).isoformat()
+
 
     # Save the conversation (last_updated handled in the database)
     save_conversation(conversation_id, conversation_name, messages_json, last_updated)
