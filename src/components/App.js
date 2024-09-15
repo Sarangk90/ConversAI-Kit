@@ -290,6 +290,11 @@ function App() {
             return updatedMessages;
         } finally {
             setAbortController(null); // Reset the controller after streaming completes
+
+            // Ensure the resetButton is always called, even after an error or abortion
+            if (messageInputRef.current) {
+                messageInputRef.current.resetButton(); // Reset button to "Send"
+            }
         }
     };
 
@@ -408,7 +413,7 @@ function App() {
                         />
                         <MessageInput onSend={handleSend}
                                       onStop={stopStreaming}
-                                      inputRef={messageInputRef}
+                                      ref={messageInputRef}
                         />
                     </div>
                 </div>
