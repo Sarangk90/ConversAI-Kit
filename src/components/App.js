@@ -12,6 +12,7 @@ function App() {
     const [conversations, setConversations] = useState([]);
     const [currentConversationId, setCurrentConversationId] = useState(null);
     const [currentConversationName, setCurrentConversationName] = useState('');
+    const [abortController, setAbortController] = useState(null); // New state for aborting stream
 
     const messageInputRef = useRef(null);  // <-- Create the ref
 
@@ -235,27 +236,30 @@ function App() {
 
     // Function to stream bot responses and update the conversation
     const streamBotResponse = async (conversationId, updatedMessages) => {
+        const controller = new AbortController();
+        setAbortController(controller); // Store the controller for later use
+
         try {
             const response = await fetch('http://localhost:5000/api/stream_chat', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     conversation_id: conversationId,
                     messages: updatedMessages,
                 }),
+                signal: controller.signal, // Pass the signal to the fetch request
             });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            let assistantMessage = {role: 'assistant', content: ''};
+            let assistantMessage = { role: 'assistant', content: '' };
             updatedMessages.push(assistantMessage);
 
-            // Throttled update for assistant message
             const throttledUpdate = throttleUpdate((newMessages) => {
                 updateMessagesInUI(conversationId, newMessages);
-            }, 250);  // Update state every 250ms for smooth streaming
+            }, 250);
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
@@ -263,29 +267,38 @@ function App() {
             let buffer = '';
 
             while (!done) {
-                const {value, done: doneReading} = await reader.read();
+                const { value, done: doneReading } = await reader.read();
                 done = doneReading;
 
                 if (value) {
                     const chunkValue = decoder.decode(value);
                     buffer = processStreamChunk(chunkValue, assistantMessage, updatedMessages, conversationId);
 
-                    // Perform throttled UI updates
                     throttledUpdate(updatedMessages);
                 }
             }
 
-            // Final state update after streaming completes
             updateMessagesInUI(conversationId, updatedMessages);
-
             return updatedMessages;
 
         } catch (error) {
-            handleError(error, 'Error during streaming');
+            if (error.name === 'AbortError') {
+                console.log('Stream aborted');
+            } else {
+                handleError(error, 'Error during streaming');
+            }
             return updatedMessages;
+        } finally {
+            setAbortController(null); // Reset the controller after streaming completes
         }
     };
 
+    // New stopStreaming function
+    const stopStreaming = () => {
+        if (abortController) {
+            abortController.abort(); // Stop the streaming by aborting the request
+        }
+    };
     // New function to handle saving conversation to the backend
     const saveConversation = async (conversationId, conversationName, messages) => {
         try {
@@ -394,6 +407,7 @@ function App() {
                             messages={messages}
                         />
                         <MessageInput onSend={handleSend}
+                                      onStop={stopStreaming}
                                       inputRef={messageInputRef}
                         />
                     </div>

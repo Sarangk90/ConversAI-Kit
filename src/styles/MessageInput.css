@@ -55,12 +55,13 @@
     fill: #c0c0c0; /* Grey out the circle when disabled */
 }
 
-.message-input button:disabled .arrow {
-    stroke: #ffffff; /* Keep the arrow white even when disabled */
-    opacity: 0.5; /* Slightly fade the arrow */
+.message-input button:disabled .arrow,
+.message-input button:disabled .square {
+    stroke: #ffffff; /* Keep the arrow or square white even when disabled */
+    opacity: 0.5; /* Slightly fade the arrow or square */
 }
 
-/* Solid blue circle and white arrow by default */
+/* Solid blue circle and white arrow (Send Button) */
 .circle {
     fill: #007aff; /* Solid blue circle */
 }
@@ -72,8 +73,28 @@
     fill: none;
 }
 
-/* Hover effect: lighten the blue circle */
-.message-input button:hover .circle {
+/* Square for Stop Button */
+.square {
+    fill: #ffffff; /* White square */
+}
+
+/* Hover effect: lighten the blue circle (Send Button) */
+.message-input button:hover .arrow-icon .circle {
     fill: #66b2ff; /* Lighter blue on hover */
     transition: fill 0.3s ease; /* Smooth transition */
+}
+
+/* Hover effect: lighten the red circle (Stop Button) */
+.message-input button:hover .stop-icon .circle {
+    fill: #ff6666; /* Lighter red on hover */
+    transition: fill 0.3s ease; /* Smooth transition */
+}
+
+/* Stop Button specific styles */
+.stop-icon .circle {
+    fill: #FFBF00; /* Solid red circle for stop button */
+}
+
+.stop-icon .square {
+    fill: #ffffff; /* White square for stop */
 }
