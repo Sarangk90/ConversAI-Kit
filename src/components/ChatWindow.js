@@ -14,6 +14,10 @@ const ChatWindow = ({ messages }) => {
         }
     }, [messages]);
 
+    if (!messages || !Array.isArray(messages)) {
+        return <div>No messages yet</div>; // Fallback when no messages are available
+    }
+
     return (
         <div className="chat-window" ref={chatWindowRef}>
             {messages.map((message, index) => (
