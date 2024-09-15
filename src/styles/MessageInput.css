@@ -21,6 +21,7 @@
     border-radius: 20px;
     background-color: #f7f7f8;
     min-height: 40px;
+    max-height: 240px;
     box-sizing: border-box;
 }
 
@@ -31,16 +32,48 @@
 
 .message-input button {
     margin-left: 15px;
-    padding: 10px 25px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #007aff;
-    color: white;
+    padding: 0;
+    background-color: transparent;
     border: none;
-    border-radius: 25px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .message-input button:hover {
-    background-color: #005bb5;
+    background-color: transparent;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.message-input button:disabled {
+    cursor: not-allowed;
+}
+
+.message-input button:disabled .circle {
+    fill: #c0c0c0; /* Grey out the circle when disabled */
+}
+
+.message-input button:disabled .arrow {
+    stroke: #ffffff; /* Keep the arrow white even when disabled */
+    opacity: 0.5; /* Slightly fade the arrow */
+}
+
+/* Solid blue circle and white arrow by default */
+.circle {
+    fill: #007aff; /* Solid blue circle */
+}
+
+.arrow {
+    stroke: #ffffff; /* White arrow */
+    stroke-width: 10;
+    stroke-linecap: round;
+    fill: none;
+}
+
+/* Hover effect: lighten the blue circle */
+.message-input button:hover .circle {
+    fill: #66b2ff; /* Lighter blue on hover */
+    transition: fill 0.3s ease; /* Smooth transition */
 }

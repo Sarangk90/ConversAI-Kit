@@ -4,7 +4,7 @@
     width: 100%; /* Full width inside wrapper */
     max-width: 900px; /* Limit width for readability */
     padding: 20px;
-    background-color: var(--background-color); /* Maintain background color */
+    background-color: #FAFBFC; /* Very light background color for readability */
     border-radius: 8px;
     box-shadow: none;
     overflow-y: auto;
@@ -25,6 +25,7 @@
     border-radius: 4px;
 }
 
+/* Empty Chat Window State */
 .chat-window-empty {
     display: flex;
     justify-content: center;
@@ -36,7 +37,14 @@
     padding: 20px;
 }
 
+/* Bot Avatar Styling */
 .bot-avatar-empty {
     width: 120px; /* Adjust the size as needed */
     margin-bottom: 20px;
+    padding: 15px;
+}
+
+/* Text for empty chat state */
+.empty-state-content p {
+    color: #666; /* Slightly darker grey for text */
 }
