@@ -1,6 +1,4 @@
-// App.js
-
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
@@ -23,18 +21,21 @@ function App() {
     // useEffect to load messages when currentConversationId changes
     useEffect(() => {
         if (currentConversationId) {
-            if (!messagesByConversation[currentConversationId]) {
-                fetchMessagesForConversation(currentConversationId);
-            } else {
-                setMessages(messagesByConversation[currentConversationId]);
-                const conversation = conversations.find(
-                    (conv) => conv.conversation_id === currentConversationId
-                );
-                if (conversation) {
-                    setCurrentConversationName(conversation.conversation_name || 'New Conversation');
+            const conversation = conversations.find(conv => conv.conversation_id === currentConversationId);
+
+            // Only fetch messages if the conversation is NOT new
+            if (conversation && !conversation.isNew) {
+                if (!messagesByConversation[currentConversationId]) {
+                    fetchMessagesForConversation(currentConversationId);
                 } else {
-                    setCurrentConversationName('New Conversation');
+                    // Update messagesByConversation
+                    setMessages(messagesByConversation[currentConversationId]);
+                    setCurrentConversationName(conversation.conversation_name || 'New Conversation');
                 }
+            } else {
+                // Handle the new conversation (set up empty state)
+                setMessages(messagesByConversation[currentConversationId]);
+                setCurrentConversationName('New Conversation');
             }
         }
     }, [currentConversationId, messagesByConversation, conversations]);
@@ -45,13 +46,10 @@ function App() {
             const response = await fetch('http://localhost:5000/api/conversations');
             const conversationsData = await response.json();
 
-            // Extract conversation IDs and names
-            const conversationsList = conversationsData.map((conv) => ({
-                conversation_id: conv.conversation_id,
-                conversation_name: conv.conversation_name || 'New Conversation',
-            }));
+            // Sort conversations by lastUpdated in descending order
+            const sortedConversations = sortConversationsByLastUpdated(conversationsData);
 
-            setConversations(conversationsList);
+            setConversations(sortedConversations);
         } catch (error) {
             console.error('Error fetching conversations:', error);
         }
@@ -72,9 +70,6 @@ function App() {
             // Update messages and conversation name if still viewing this conversation
             if (conversationId === currentConversationId) {
                 setMessages(data.messages || []);
-                if (data.conversation_name) {
-                    setCurrentConversationName(data.conversation_name);
-                }
                 setCurrentConversationName(data.conversation_name || 'New Conversation');
             }
         } catch (error) {
@@ -102,27 +97,34 @@ function App() {
                     (conv) => conv.conversation_id === conversation.conversation_id
                 );
                 if (index !== -1) {
-                    // Update existing conversation's name
+                    // Update existing conversation's name and lastUpdated
                     const updatedConversations = [...prevConversations];
                     updatedConversations[index] = {
                         ...updatedConversations[index],
                         conversation_name: conversation.conversation_name,
+                        last_updated: data.last_updated // Use lastUpdated from backend
                     };
-                    return updatedConversations;
+                    return sortConversationsByLastUpdated(updatedConversations);
                 } else {
                     // Add new conversation
-                    return [
+                    return sortConversationsByLastUpdated([
                         ...prevConversations,
                         {
                             conversation_id: conversation.conversation_id,
                             conversation_name: conversation.conversation_name,
+                            last_updated: data.last_updated  // Use lastUpdated from backend
                         },
-                    ];
+                    ]);
                 }
             });
         } catch (error) {
             console.error('Error saving conversation:', error);
         }
+    };
+
+    // Function to sort conversations by lastUpdated
+    const sortConversationsByLastUpdated = (conversations) => {
+        return conversations.sort((a, b) => new Date(b.last_updated) - new Date(a.last_updated));
     };
 
     // Generate a conversation name based on the first message
@@ -159,7 +161,6 @@ function App() {
         }
     };
 
-// New function to handle streaming bot responses
     // Function to handle processing each chunk of the bot's response
     const processStreamChunk = (chunkValue, assistantMessage, updatedMessages, conversationId) => {
         let buffer = chunkValue;
@@ -194,7 +195,7 @@ function App() {
         return lines[lines.length - 1];
     };
 
-// Helper function to update messages in the UI
+    // Helper function to update messages in the UI
     const updateMessagesInUI = (conversationId, updatedMessages) => {
         setMessagesByConversation((prev) => ({
             ...prev,
@@ -206,7 +207,6 @@ function App() {
         }
     };
 
-// Refactored streamBotResponse function
     // Throttled update function for smooth message display
     const throttleUpdate = (callback, limit = 200) => {
         let lastExecutionTime = 0;
@@ -219,6 +219,7 @@ function App() {
         };
     };
 
+    // Function to stream bot responses and update the conversation
     const streamBotResponse = async (conversationId, updatedMessages) => {
         try {
             const response = await fetch('http://localhost:5000/api/stream_chat', {
@@ -271,8 +272,7 @@ function App() {
         }
     };
 
-
-// New function to handle saving conversation to the backend
+    // New function to handle saving conversation to the backend
     const saveConversation = async (conversationId, conversationName, messages) => {
         try {
             await saveConversationToBackend({
@@ -285,7 +285,7 @@ function App() {
         }
     };
 
-// Refactored handleSend method
+    // Refactored handleSend method
     const handleSend = async (messageText) => {
         const userMessage = {role: 'user', content: messageText};
         let conversationId = currentConversationId || generateUniqueId();
@@ -341,21 +341,21 @@ function App() {
     const createNewConversation = () => {
         const newConversationId = generateUniqueId();
 
-        // Set the current conversation to the newly created one
         setCurrentConversationId(newConversationId);
         setCurrentConversationName('New Conversation');
         setMessages([]);
 
         // Immediately add "New Conversation" to the sidebar
         setConversations((prevConversations) => [
-            ...prevConversations,
             {
                 conversation_id: newConversationId,
                 conversation_name: 'New Conversation',
+                last_updated: new Date().toISOString(),
             },
+            ...prevConversations,
         ]);
         if (messageInputRef.current) {
-            messageInputRef.current.focus();  // <-- Set focus to input
+            messageInputRef.current.focus();
         }
     };
 
