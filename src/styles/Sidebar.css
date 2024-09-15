@@ -1,29 +1,30 @@
 /* Sidebar container */
 .sidebar {
     width: 220px;
-    background-color: #1e2a38; /* Dark Blue background for improved contrast */
-    color: #ffffff; /* Light text color for better readability */
+    background-color: #1F2937; /* Slate Grey background for a more neutral look */
+    color: #E5E7EB; /* Light grey text for better readability */
     display: flex;
     flex-direction: column;
     padding: 15px 10px;
     border-right: 1px solid #333;
-    height: 100vh; /* Full height */
-    justify-content: space-between; /* Distribute header and content */
+    height: 100vh;
+    justify-content: space-between;
 }
 
 /* Sidebar Header (New Chat Button) */
 .sidebar-header {
     display: flex;
-    justify-content: center; /* Center the button horizontally */
+    justify-content: center;
     margin-bottom: 10px;
 }
 
 /* New Chat Button Styling */
+/* New Chat Button Styling */
 .sidebar button.new-chat-btn {
     display: flex;
     align-items: center;
-    justify-content: center; /* Center the text and icon */
-    background: linear-gradient(145deg, #3b82f6, #2563eb); /* Gradient blue */
+    justify-content: center;
+    background: linear-gradient(145deg, #4677C2, #6A91D6); /* Brighter blue and sky blue gradient */
     color: white;
     padding: 10px 14px;
     font-size: 15px;
@@ -40,9 +41,9 @@
 
 /* Hover effect for New Chat button */
 .sidebar button.new-chat-btn:hover {
-    background: linear-gradient(145deg, #2563eb, #1d4ed8); /* Darker gradient on hover */
+    background: linear-gradient(145deg, #3565AA, #5585C4); /* Slightly darker blue on hover */
     transform: scale(1.05); /* Slight scaling on hover */
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6
 }
 
 .sidebar button.new-chat-btn img {
@@ -51,64 +52,71 @@
     height: 18px;
 }
 
+
 /* Sidebar content to hold conversation list */
 .sidebar-content {
     flex-grow: 1;
-    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-y: auto;
     display: flex;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column;
     padding-right: 5px;
 }
 
 /* Conversation group header styling */
 .conversation-group-header {
     font-size: 14px;
-    font-weight: normal; /* Softer font weight for minimalistic look */
-    color: #a0aec0; /* Lighter gray for group headings */
-    margin: 12px 0 6px 0; /* More space above group headings */
-    padding-left: 10px; /* Align heading with conversation buttons */
+    font-weight: normal;
+    color: #9CA3AF; /* Softer light grey for group headers */
+    margin: 12px 0 6px 0;
+    padding-left: 10px;
 }
 
 /* Conversation Button Styling */
 .sidebar button.conversation {
     display: block;
     background-color: transparent;
-    color: #e3e3e3;
-    width: 100%; /* Full width of the container */
+    color: #E5E7EB; /* Lighter grey for inactive text */
+    width: 100%;
     padding: 8px 10px;
     border: none;
     border-radius: 6px;
     text-align: left;
     font-size: 15px;
     font-weight: 500;
-    margin-bottom: 4px; /* Space between each conversation */
+    margin-bottom: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    white-space: nowrap; /* Prevent long text wrapping */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    box-sizing: border-box; /* Ensure padding is included in width */
-    flex-shrink: 0; /* Prevent shrinking */
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 /* Hover and active state styling */
 .sidebar button.conversation:hover {
-    background-color: #2b2d31;
+    background-color: #3B82F6; /* Muted blue for hover */
 }
 
 .sidebar button.conversation.active {
-    background-color: #343541;
-    color: #fff;
-    border-left: 3px solid #007aff;
+    background-color: #E5E7EB; /* Light grey for active conversation */
+    color: #1F2937; /* Slate grey for active text */
+    border-left: 3px solid #007B83; /* Teal accent for active state */
     box-shadow: inset 0 0 8px rgba(0, 122, 255, 0.2);
 }
 
 /* Scrollbar Styling */
 .sidebar-content::-webkit-scrollbar {
-    width: 8px;
+    width: 4px; /* Thinner scrollbar */
 }
 
 .sidebar-content::-webkit-scrollbar-thumb {
-    background-color: #888;
+    background-color: #4A5568; /* Less prominent grey for the scrollbar */
     border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect on scrollbar to make it slightly more prominent */
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background-color: #718096; /* Slightly brighter grey on hover */
 }
