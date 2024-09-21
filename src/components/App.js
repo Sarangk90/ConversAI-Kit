@@ -320,8 +320,33 @@ function App() {
     // Refactored handleSend method
     const handleSend = async (messageText) => {
         const userMessage = {role: 'user', content: messageText};
-        let conversationId = currentConversationId || generateUniqueId();
+        let conversationId = currentConversationId;
         let conversationName = currentConversationName;
+
+            // Check if no conversation is selected or present in the URL
+        if (!conversationId) {
+            conversationId = generateUniqueId();
+            conversationName = 'New Conversation';
+
+            // Create a new conversation
+            setCurrentConversationId(conversationId);
+            setCurrentConversationName(conversationName);
+            setMessages([]);
+
+            // Immediately add "New Conversation" to the sidebar
+            setConversations((prevConversations) => [
+                {
+                    conversation_id: conversationId,
+                    conversation_name: conversationName,
+                    last_updated: new Date().toISOString(),
+                },
+                ...prevConversations,
+            ]);
+
+            // Update the URL with the new conversation ID
+            navigate(`/?conversation_id=${conversationId}`);
+        }
+
 
         const prevMessages = messagesByConversation[conversationId] || [];
         let updatedMessages = [...prevMessages, userMessage];
