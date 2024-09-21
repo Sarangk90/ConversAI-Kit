@@ -401,6 +401,20 @@ function App() {
 
     // Handle creating a new conversation
     const createNewConversation = () => {
+
+        // Check if there is already a "New Conversation" in the list
+        const existingNewConversation = conversations.find(conv => conv.conversation_name === 'New Conversation');
+
+        if (existingNewConversation) {
+            // Switch to the existing "New Conversation"
+            setCurrentConversationId(existingNewConversation.conversation_id);
+            setCurrentConversationName('New Conversation');
+            setMessages(messagesByConversation[existingNewConversation.conversation_id] || []);
+            if (messageInputRef.current) {
+                messageInputRef.current.focus();
+            }
+            return;
+        }
         const newConversationId = generateUniqueId();
 
         setCurrentConversationId(newConversationId);
