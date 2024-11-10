@@ -58,7 +58,7 @@ def generate_conversation_name(first_user_message):
         prompt = f"Generate a brief, 3-4 word conversation title for the following message:\n\n\"{first_user_message}\""
 
         response = openai.ChatCompletion.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an assistant that generates concise conversation titles."},
                 {"role": "user", "content": prompt}
