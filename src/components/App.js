@@ -156,7 +156,11 @@ function App() {
             }
 
             const data = await response.json();
-            return data.name || 'New Conversation';
+            let name = data.name || 'New Conversation';
+
+            // Clean the name by removing leading/trailing whitespace and any surrounding double quotes
+            name = name.trim().replace(/^"(.*)"$/, '$1');
+            return name;
         } catch (error) {
             console.error('Error fetching conversation name:', error);
             return 'New Conversation';
