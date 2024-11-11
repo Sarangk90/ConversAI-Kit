@@ -5,7 +5,7 @@ import os
 
 # Set up OpenAI API key securely using environment variables
 openai.api_key = os.getenv('OPENAI_API_KEY')
-openai.api_base = 'https://chat.int.bayer.com/api/v2'
+openai.api_base = os.getenv('OPENAI_API_BASE')
 
 # Function to get bot response using GPT-4
 def get_bot_response(user_message):
