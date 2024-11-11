@@ -1,86 +1,100 @@
-import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
-import '../styles/MessageInput.css';
-
-const MessageInput = forwardRef(({ onSend, onStop }, ref) => {
+// src/components/MessageInput.js
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    forwardRef,
+    useImperativeHandle,
+  } from 'react';
+  import '../styles/MessageInput.css';
+  import ModelSelector from './ModelSelector'; // Import the ModelSelector
+  
+  const MessageInput = forwardRef(({ onSend, onStop }, ref) => {
     const [input, setInput] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo'); // Default model
     const textareaRef = useRef(null);
-
-    // Expose a reset function to App.js to reset the button to "Send"
+  
+    // Expose methods to parent component
     useImperativeHandle(ref, () => ({
-        resetButton() {
-            setIsProcessing(false); // Reset button to "Send"
-            setInput(''); // Clear input field if necessary
-        },
-        focus() {
-            if (textareaRef.current) {
-                textareaRef.current.focus(); // Focus the textarea
-            }
+      resetButton() {
+        setIsProcessing(false);
+        setInput('');
+      },
+      focus() {
+        if (textareaRef.current) {
+          textareaRef.current.focus();
         }
+      },
     }));
-
-    useEffect(() => {
-        return () => {
-            console.log("MessageInput component unmounted");
-        };
-    }, []);
-
+  
     const handleSend = () => {
-        if (input.trim()) {
-            onSend(input);
-            setIsProcessing(true); // Set processing state to true (display Stop button)
-            setInput(''); // Clear the input field after sending
-        }
+      if (input.trim()) {
+        onSend(input, selectedModel); // Pass selectedModel to onSend
+        setIsProcessing(true);
+        setInput('');
+      }
     };
-
-    const handleStop = () => {
-        onStop(); // Call stop function passed from App.js
-        setIsProcessing(false); // Reset back to "Send" button after stopping
-    };
-
+  
     const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
     };
-
+  
     // Auto-adjust the height of the textarea
     useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set height to scrollHeight
-        }
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      }
     }, [input]);
-
+  
     return (
-        <div className="message-input">
-            <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message here..."
-                onKeyDown={handleKeyDown}
-                rows={1}
-            />
-            <button
-                onClick={isProcessing ? handleStop : handleSend}
-                disabled={!input.trim() && !isProcessing} // Disable button when input is empty
+      <div className="message-input">
+        <ModelSelector
+          selectedModel={selectedModel}
+          onModelChange={setSelectedModel}
+        />
+        <textarea
+          ref={textareaRef}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type your message here..."
+          onKeyDown={handleKeyDown}
+          rows={1}
+        />
+        <button
+          onClick={isProcessing ? onStop : handleSend}
+          disabled={!input.trim() && !isProcessing}
+        >
+          {isProcessing ? (
+            // Stop icon SVG
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              width="24"
+              viewBox="0 0 24 24"
+              fill="#FF3B30"
             >
-                {isProcessing ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="35" height="35" className="stop-icon">
-                        <circle cx="50" cy="50" r="45" className="circle" />
-                        <rect x="35" y="35" width="30" height="30" className="square" />
-                    </svg>
-                ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="35" height="35" className="arrow-icon">
-                        <circle cx="50" cy="50" r="45" className="circle" />
-                        <path d="M50 25 L50 75 M30 50 L50 25 L70 50" className="arrow" strokeWidth="10" strokeLinecap="round" fill="none" />
-                    </svg>
-                )}
-            </button>
-        </div>
+              <path d="M19 13H5v-2h14v2z" />
+            </svg>
+          ) : (
+            // Send icon SVG
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              width="24"
+              viewBox="0 0 24 24"
+              fill="#007AFF"
+            >
+              <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+            </svg>
+          )}
+        </button>
+      </div>
     );
-});
-
-export default MessageInput;
+  });
+  
+  export default MessageInput;
