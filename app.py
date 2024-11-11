@@ -130,13 +130,14 @@ def stream_chat():
         # Extract conversation details
         conversation_id = data.get('conversation_id')
         messages = data.get('messages')
+        model = data.get('model', 'gpt-4o')
 
         if not conversation_id or not messages or not isinstance(messages, list):
             return jsonify({'error': 'Invalid conversation ID or messages'}), 400
 
         # Get the bot's response generator
         def generate():
-            for chunk in get_bot_response_stream(messages):
+            for chunk in get_bot_response_stream(messages, model):
                 # Convert the chunk to a JSON-formatted string
                 json_data = json.dumps(chunk)
                 # SSE format: data: <message>\n\n
