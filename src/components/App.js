@@ -239,7 +239,7 @@ function App() {
     };
 
     // Function to stream bot responses and update the conversation
-    const streamBotResponse = async (conversationId, updatedMessages) => {
+    const streamBotResponse = async (conversationId, updatedMessages, model) => {
         const controller = new AbortController();
         setAbortController(controller); // Store the controller for later use
 
@@ -250,6 +250,7 @@ function App() {
                 body: JSON.stringify({
                     conversation_id: conversationId,
                     messages: updatedMessages,
+                    model: model,
                 }),
                 signal: controller.signal, // Pass the signal to the fetch request
             });
@@ -322,8 +323,8 @@ function App() {
     };
 
     // Refactored handleSend method
-    const handleSend = async (messageText) => {
-        const userMessage = {role: 'user', content: messageText};
+    const handleSend = async (messageText, selectedModel) => {
+        const userMessage = {role: 'user', content: messageText, model: selectedModel};
         let conversationId = currentConversationId;
         let conversationName = currentConversationName;
 
@@ -373,7 +374,7 @@ function App() {
             : Promise.resolve(conversationName);
 
         // Start streaming bot response asynchronously
-        const botResponsePromise = streamBotResponse(conversationId, updatedMessages);
+        const botResponsePromise = streamBotResponse(conversationId, updatedMessages, selectedModel);
 
         // Wait for both the conversation name and bot response before saving
         Promise.all([conversationNamePromise, botResponsePromise])

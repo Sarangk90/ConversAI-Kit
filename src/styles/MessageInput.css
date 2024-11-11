@@ -12,6 +12,10 @@
     position: relative; /* Make it a regular block element */
 }
 
+.message-input .model-selector {
+    margin-right: 10px;
+  }
+  
 .message-input textarea {
     flex: 1;
     padding: 10px 15px;
