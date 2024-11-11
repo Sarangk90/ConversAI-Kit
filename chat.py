@@ -28,29 +28,41 @@ def get_bot_response(user_message):
         return str(e)
 
 
-def get_bot_response_stream(messages):
+def get_bot_response_stream(messages, model):
     try:
-        # Ensure system prompt is included
-        system_prompt = {"role": "system", "content": "You are a helpful assistant."}
+        # Check if the model is part of the o1 series
+        is_o1_model = model in ["o1-preview", "o1-mini"]
 
-        if messages[0]['role'] != 'system':
-            messages.insert(0, system_prompt)
+        # Add system prompt only for models that support it
+        if not is_o1_model:
+            system_prompt = {"role": "system", "content": "You are a helpful assistant."}
+            if messages[0]['role'] != 'system':
+                messages.insert(0, system_prompt)
 
-        # Call the GPT-4 model with stream=True
+        # Set stream to False for o1 models
+        stream = not is_o1_model
+
+        # Call the model
         response = openai.ChatCompletion.create(
-            model="gpt-4o",
+            model=model,
             messages=messages,
-            stream=True
+            stream=stream
         )
-        # response is an iterator
-        for chunk in response:
-            # Each chunk may have 'choices' and 'delta'
-            chunk_content = chunk['choices'][0]['delta'].get('content', '')
-            if chunk_content:
-                # Yield a dictionary with additional metadata if needed
-                yield {'content': chunk_content}
+
+        if stream:
+            # Stream response chunks
+            for chunk in response:
+                chunk_content = chunk['choices'][0]['delta'].get('content', '')
+                if chunk_content:
+                    yield {'content': chunk_content}
+        else:
+            # Return the full response for non-streaming models
+            full_response = response['choices'][0]['message']['content']
+            yield {'content': full_response}
+
     except Exception as e:
         yield {'error': str(e)}
+
 # Function to generate conversation name
 def generate_conversation_name(first_user_message):
     try:
