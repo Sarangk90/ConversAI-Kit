@@ -31,6 +31,11 @@ const MessageBubble = React.memo(({ message, role }) => {
                 <img src={botAvatar} alt="bot avatar" className="avatar" />
             )}
             <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
+                {message.image && (
+                    <div className="message-image">
+                        <img src={message.image} alt="User uploaded" />
+                    </div>
+                )}
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
