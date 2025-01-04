@@ -13,14 +13,15 @@ import React, {
     const [input, setInput] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
     const [selectedModel, setSelectedModel] = useState('claude-3-5-sonnet');
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreviews, setImagePreviews] = useState([]);
     const textareaRef = useRef(null);
+    const fileInputRef = useRef(null);
   
     useImperativeHandle(ref, () => ({
       resetButton() {
         setIsProcessing(false);
         setInput('');
-        setImagePreview(null);
+        setImagePreviews([]);
       },
       focus() {
         if (textareaRef.current) {
@@ -28,6 +29,18 @@ import React, {
         }
       },
     }));
+  
+    const addImageToPreview = (file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreviews(prev => [...prev, {
+          data: reader.result,
+          type: file.type,
+          name: file.name || 'uploaded-image.png'
+        }]);
+      };
+      reader.readAsDataURL(file);
+    };
   
     const handlePaste = async (e) => {
       const items = e.clipboardData?.items;
@@ -41,36 +54,56 @@ import React, {
           const file = item.getAsFile();
           if (!file) continue;
 
-          // Convert image to base64
-          const reader = new FileReader();
-          reader.onload = () => {
-            setImagePreview({
-              data: reader.result,
-              type: file.type,
-              name: file.name || 'pasted-image.png'
-            });
-          };
-          reader.readAsDataURL(file);
-          break;
+          addImageToPreview(file);
         }
       }
     };
 
-    const removeImage = () => {
-      setImagePreview(null);
+    const handleDrop = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const files = Array.from(e.dataTransfer.files);
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          addImageToPreview(file);
+        }
+      });
+    };
+
+    const handleDragOver = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const handleFileSelect = (e) => {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+          addImageToPreview(file);
+        }
+      });
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    };
+
+    const removeImage = (index) => {
+      setImagePreviews(prev => prev.filter((_, i) => i !== index));
     };
   
     const handleSend = () => {
-      if (input.trim() || imagePreview) {
+      if (input.trim() || imagePreviews.length > 0) {
         try {
           const message = {
             text: input.trim(),
-            image: imagePreview?.data
+            images: imagePreviews.map(img => img.data)
           };
           onSend(message, selectedModel);
           setIsProcessing(true);
           setInput('');
-          setImagePreview(null);
+          setImagePreviews([]);
         } catch (error) {
           console.error('Error sending message:', error);
           setIsProcessing(false);
@@ -98,40 +131,73 @@ import React, {
           selectedModel={selectedModel}
           onModelChange={setSelectedModel}
         />
-        {imagePreview && (
-          <div className="image-preview">
-            <img src={imagePreview.data} alt="Preview" />
-            <button className="remove-image" onClick={removeImage}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+        {imagePreviews.length > 0 && (
+          <div className="image-previews">
+            {imagePreviews.map((preview, index) => (
+              <div key={index} className="image-preview">
+                <img src={preview.data} alt={`Preview ${index + 1}`} />
+                <button className="remove-image" onClick={() => removeImage(index)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            ))}
           </div>
         )}
-        <div className="input-container">
+        <div className="input-container" onDrop={handleDrop} onDragOver={handleDragOver}>
           <textarea
             ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onPaste={handlePaste}
-            placeholder="Type your message here or paste an image..."
+            placeholder="Type your message here, paste, or drag & drop images..."
             onKeyDown={handleKeyDown}
             rows={1}
           />
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            accept="image/*"
+            multiple
+            style={{ display: 'none' }}
+          />
+          <button
+            className="upload-button"
+            onClick={() => fileInputRef.current?.click()}
+            title="Upload images"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </button>
           <button
             onClick={isProcessing ? onStop : handleSend}
-            disabled={(!input.trim() && !imagePreview) && !isProcessing}
+            disabled={(!input.trim() && imagePreviews.length === 0) && !isProcessing}
           >
             {isProcessing ? (
               <svg

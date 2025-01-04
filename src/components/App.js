@@ -327,9 +327,26 @@ function App() {
         const userMessage = {
             role: 'user',
             content: message.text || '',
-            image: message.image,
             model: selectedModel
         };
+
+        // If there are images, format them as content array
+        if (message.images && message.images.length > 0) {
+            userMessage.content = [
+                { type: 'text', text: message.text || '' },
+                ...message.images.map(image => {
+                    // Extract the base64 data after the comma
+                    const base64Data = image.split(',')[1];
+                    return {
+                        type: 'image_url',
+                        image_url: { 
+                            url: `data:image/jpeg;base64,${base64Data}`
+                        }
+                    };
+                })
+            ];
+        }
+
         let conversationId = currentConversationId;
         let conversationName = currentConversationName;
 
