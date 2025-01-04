@@ -12,7 +12,7 @@ import React, {
   const MessageInput = forwardRef(({ onSend, onStop }, ref) => {
     const [input, setInput] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
-    const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo'); // Default model
+    const [selectedModel, setSelectedModel] = useState('claude-3.5-sonnet'); // Default model
     const textareaRef = useRef(null);
   
     // Expose methods to parent component
@@ -30,7 +30,7 @@ import React, {
   
     const handleSend = () => {
       if (input.trim()) {
-        onSend(input, selectedModel); // Pass selectedModel to onSend
+        onSend(input, selectedModel);
         setIsProcessing(true);
         setInput('');
       }

@@ -3,8 +3,8 @@ import '../styles/ModelSelector.css';
 
 const ModelSelector = ({ selectedModel, onModelChange }) => {
   const AVAILABLE_MODELS = {
+    'claude-3.5-sonnet': 'Claude 3.5 Sonnet',
     'gpt-4o': 'GPT-4o',
-    'claude-3-5-sonnet': 'Claude 3.5 Sonnet',
     'o1-preview': 'O1 Preview',
     'o1-mini': 'O1 Mini',
   };
