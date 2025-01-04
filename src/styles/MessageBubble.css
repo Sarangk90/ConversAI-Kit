@@ -8,14 +8,11 @@ body {
 
 /* Avatar Styling */
 .avatar {
-    background-color: transparent; /* Ensure no background color */
     width: 32px;
-    height: 28px;
-    object-fit: cover;
+    height: 32px;
+    border-radius: 50%;
     margin-right: 12px;
-    margin-left: 2px;
-    align-self: flex-start;
-    margin-top: 9px;
+    margin-top: 4px;
     flex-shrink: 0;
 }
 
@@ -23,10 +20,11 @@ body {
 /* Message Bubble Container */
 .message-bubble-container {
     display: flex;
-    align-items: flex-start; /* Align the avatar and message at the top */
+    align-items: flex-start;
     margin-bottom: 16px;
     width: 100%;
     position: relative;
+    padding: 0 16px;
 }
 
 /* General message bubble styling */
@@ -36,49 +34,84 @@ body {
     font-size: 15px;
     line-height: 1.6;
     font-weight: 400;
-    padding: 10px 16px;
-    border-radius: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
     box-sizing: border-box;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    max-width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Bot messages */
 .message-bubble.bot {
-    background-color: transparent; /* No background for bot messages */
-    color: #1a1a1a;
-    padding: 0; /* Remove extra padding */
-    border-radius: 0;
-    width: calc(100% - 52px); /* Ensure bot messages take full width minus avatar space */
-    margin-right: auto; /* Align bot messages to the left */
+    background-color: #f0f0f0;
+    color: #333;
+    width: calc(100% - 52px); /* Account for avatar */
+    margin-right: auto;
+    border-radius: 12px;
 }
 
 /* User messages */
 .message-bubble.user {
-    background-color: #e8f4ff; /* Light blue for user messages */
-    color: #1a1a1a;
-    align-self: flex-end;
-    padding: 10px 12px; /* Adjusted padding for a tighter look */
-    border-radius: 10px;
-    max-width: fit-content; /* Let the bubble fit the text */
-    margin-left: auto; /* Align user messages to the right */
-    margin-right: 0;
+    background-color: #007AFF;
+    color: white;
+    margin-left: auto;
+    max-width: 80%;
 }
 
-/* Typography for bot responses */
-.message-bubble.bot h1, .message-bubble.bot h2, .message-bubble.bot h3 {
-    color: #1a1a1a;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 10px;
+/* Images in messages */
+.message-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+    order: -1; /* Show images before text */
+    max-width: 400px; /* Limit maximum width of image container */
 }
 
-/* Copy button base styles - shared between code and message copy buttons */
-.copy-button,
+.message-image {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 16/9; /* Maintain consistent aspect ratio */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.message-image:hover {
+    transform: scale(1.02);
+}
+
+.message-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* Specific styling for user message images */
+.message-bubble.user .message-image {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Bot message images */
+.message-bubble.bot .message-image {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Message actions (copy button) */
+.message-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
 .message-copy-button {
-    background-color: transparent;
+    background: transparent;
     border: none;
     padding: 6px;
     cursor: pointer;
@@ -90,13 +123,12 @@ body {
     justify-content: center;
 }
 
-.copy-button:hover,
 .message-copy-button:hover {
     background-color: rgba(0, 0, 0, 0.1);
     color: #333;
 }
 
-/* Code block specific styles */
+/* Code block styling */
 .code-block-wrapper {
     position: relative;
     margin: 1em 0;
@@ -113,111 +145,134 @@ body {
     border-bottom: 1px solid #181a1f;
 }
 
-/* Code block copy button specific styles */
-.code-block-header .copy-button {
+.copy-button {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 4px;
     color: #abb2bf;
+    transition: all 0.2s ease;
 }
 
-.code-block-header .copy-button:hover {
+.copy-button:hover {
     background-color: #4b5263;
     color: #ffffff;
 }
 
-/* Code block styling */
-.syntax-highlighter-wrapper {
-    overflow-x: auto;
-}
-
-.syntax-highlighter-wrapper pre {
-    margin: 0 !important;
-    padding: 16px !important;
-    font-size: 14px !important;
-    line-height: 1.5 !important;
-    font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
-}
-
 /* Inline code styling */
 .message-bubble :not(pre) > code {
-    background-color: #282c34;
-    color: #abb2bf;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: inherit;
     padding: 2px 6px;
     border-radius: 4px;
-    font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    font-size: 14px;
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
 }
 
-/* Ensure tables are responsive */
-.message-bubble table {
-    width: 100%;
-    max-width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+.message-bubble.user :not(pre) > code {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
-.message-bubble th, .message-bubble td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
+/* Markdown content styling */
+.message-bubble p {
+    margin: 0 0 1em 0;
 }
 
-.message-bubble th {
-    background-color: #fafafa;
-    font-weight: 600;
-}
-
-.message-bubble tr:nth-child(even) {
-    background-color: #f9f9f9;
+.message-bubble p:last-child {
+    margin-bottom: 0;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    .message-bubble {
+        max-width: 85%;
+        font-size: 14px;
+    }
+
+    .message-image {
+        max-width: 150px;
+    }
+
     .avatar {
         width: 28px;
         height: 28px;
         margin-right: 8px;
     }
+}
 
-    .message-bubble {
-        font-size: 14px;
-        padding: 10px 14px;
-        max-width: 100%; /* Full width on smaller screens */
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+    .message-bubble.bot {
+        background-color: #f0f0f0;
+        color: #333;
     }
 
-    .message-bubble.user, .message-bubble.bot {
-        max-width: 100%; /* Ensure both user and bot messages take full width on small screens */
+    .message-bubble.bot .message-copy-button {
+        color: #666;
+    }
+
+    .message-bubble.bot .message-copy-button:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    /* Only code blocks should be dark */
+    .message-bubble.bot .code-block-wrapper {
+        background-color: #282c34;
+        color: #abb2bf;
     }
 }
 
-/* Message actions container */
-.message-actions {
+/* Image Modal Styles */
+.image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-    padding-right: 8px;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
 }
 
-/* SVG icon transitions */
-.copy-button svg,
-.message-copy-button svg {
-    transition: all 0.2s ease;
-}
-
-/* Message image */
-.message-image {
-    margin: 8px 0;
-    max-width: 400px;
+.image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
     border-radius: 8px;
     overflow: hidden;
 }
 
-.message-image img {
+.image-modal-content img {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
     object-fit: contain;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    transition: background-color 0.2s ease;
+}
+
+.image-modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
