@@ -26,6 +26,7 @@ body {
     align-items: flex-start; /* Align the avatar and message at the top */
     margin-bottom: 16px;
     width: 100%;
+    position: relative;
 }
 
 /* General message bubble styling */
@@ -74,7 +75,28 @@ body {
     margin-bottom: 10px;
 }
 
-/* Code block wrapper and copy button styling */
+/* Copy button base styles - shared between code and message copy buttons */
+.copy-button,
+.message-copy-button {
+    background-color: transparent;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #666;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-button:hover,
+.message-copy-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Code block specific styles */
 .code-block-wrapper {
     position: relative;
     margin: 1em 0;
@@ -91,20 +113,13 @@ body {
     border-bottom: 1px solid #181a1f;
 }
 
-.copy-button {
-    background-color: transparent;
-    border: 1px solid #4b5263;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
+/* Code block copy button specific styles */
+.code-block-header .copy-button {
     color: #abb2bf;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.copy-button:hover {
+.code-block-header .copy-button:hover {
     background-color: #4b5263;
-    border-color: #6b7380;
     color: #ffffff;
 }
 
@@ -175,5 +190,19 @@ body {
     .message-bubble.user, .message-bubble.bot {
         max-width: 100%; /* Ensure both user and bot messages take full width on small screens */
     }
+}
+
+/* Message actions container */
+.message-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+    padding-right: 8px;
+}
+
+/* SVG icon transitions */
+.copy-button svg,
+.message-copy-button svg {
+    transition: all 0.2s ease;
 }
 
