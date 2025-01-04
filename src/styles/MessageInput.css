@@ -1,21 +1,74 @@
 .message-input {
     display: flex;
+    flex-direction: column;
     padding: 15px;
     background-color: #ffffff;
     border-top: 1px solid #e0e0e0;
-    align-items: center;
-    width: 100%; /* Full width of parent container */
-    max-width: 800px; /* Match the max-width of the conversation window */
-    box-sizing: border-box; /* Ensure padding and border are included in width */
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
     margin: 0 auto;
-    padding-bottom: 15px;
-    position: relative; /* Make it a regular block element */
+    gap: 10px;
+}
+
+.input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    width: 100%;
 }
 
 .message-input .model-selector {
-    margin-right: 10px;
-  }
-  
+    margin-bottom: 10px;
+}
+
+/* Image preview container */
+.image-preview {
+    position: relative;
+    max-width: 200px;
+    margin: 8px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    background-color: #f7f7f8;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+/* Remove image button */
+.remove-image {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.remove-image svg {
+    width: 14px;
+    height: 14px;
+}
+
 .message-input textarea {
     flex: 1;
     padding: 10px 15px;
@@ -36,70 +89,24 @@
 }
 
 .message-input button {
-    margin-left: 15px;
-    padding: 0;
     background-color: transparent;
     border: none;
     cursor: pointer;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.message-input button:hover {
-    background-color: transparent;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
+    margin-left: 8px;
 }
 
 .message-input button:disabled {
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
-.message-input button:disabled .circle {
-    fill: #c0c0c0; /* Grey out the circle when disabled */
-}
-
-.message-input button:disabled .arrow,
-.message-input button:disabled .square {
-    stroke: #ffffff; /* Keep the arrow or square white even when disabled */
-    opacity: 0.5; /* Slightly fade the arrow or square */
-}
-
-/* Solid blue circle and white arrow (Send Button) */
-.circle {
-    fill: #007aff; /* Solid blue circle */
-}
-
-.arrow {
-    stroke: #ffffff; /* White arrow */
-    stroke-width: 10;
-    stroke-linecap: round;
-    fill: none;
-}
-
-/* Square for Stop Button */
-.square {
-    fill: #ffffff; /* White square */
-}
-
-/* Hover effect: lighten the blue circle (Send Button) */
-.message-input button:hover .arrow-icon .circle {
-    fill: #66b2ff; /* Lighter blue on hover */
-    transition: fill 0.3s ease; /* Smooth transition */
-}
-
-/* Hover effect: lighten the red circle (Stop Button) */
-.message-input button:hover .stop-icon .circle {
-    fill: #ff6666; /* Lighter red on hover */
-    transition: fill 0.3s ease; /* Smooth transition */
-}
-
-/* Stop Button specific styles */
-.stop-icon .circle {
-    fill: #FFBF00; /* Solid red circle for stop button */
-}
-
-.stop-icon .square {
-    fill: #ffffff; /* White square for stop */
+/* Send and Stop icons */
+.message-input button svg {
+    width: 24px;
+    height: 24px;
+    transition: all 0.2s ease;
 }

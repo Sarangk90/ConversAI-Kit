@@ -323,12 +323,17 @@ function App() {
     };
 
     // Refactored handleSend method
-    const handleSend = async (messageText, selectedModel) => {
-        const userMessage = {role: 'user', content: messageText, model: selectedModel};
+    const handleSend = async (message, selectedModel) => {
+        const userMessage = {
+            role: 'user',
+            content: message.text || '',
+            image: message.image,
+            model: selectedModel
+        };
         let conversationId = currentConversationId;
         let conversationName = currentConversationName;
 
-            // Check if no conversation is selected or present in the URL
+        // Check if no conversation is selected or present in the URL
         if (!conversationId) {
             conversationId = generateUniqueId();
             conversationName = 'New Conversation';
@@ -352,7 +357,6 @@ function App() {
             navigate(`/?conversation_id=${conversationId}`);
         }
 
-
         const prevMessages = messagesByConversation[conversationId] || [];
         let updatedMessages = [...prevMessages, userMessage];
 
@@ -361,7 +365,7 @@ function App() {
 
         // Generate conversation name if it's a new conversation
         const conversationNamePromise = (conversationName === 'New Conversation')
-            ? generateConversationName(messageText)
+            ? generateConversationName(message.text || 'Image message')
                 .then((name) => {
                     setCurrentConversationName(name);
                     conversationName = name;
