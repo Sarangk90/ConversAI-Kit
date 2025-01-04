@@ -122,35 +122,62 @@ def get_conversation_messages(conversation_id):
         return jsonify({'error': 'Conversation not found'}), 404
 
 
+def process_message(msg):
+    """Process a single message and format it according to API requirements."""
+    if msg.get('image'):
+        return {
+            'role': msg['role'],
+            'content': [
+                {
+                    'type': 'text',
+                    'text': msg['content']
+                },
+                {
+                    'type': 'image_url',
+                    'image_url': {
+                        'url': f"data:image/jpeg;base64,{msg['image'].split(',')[1]}"
+                    }
+                }
+            ]
+        }
+    return {
+        'role': msg['role'],
+        'content': msg.get('content', '')
+    }
+
+def validate_request(data):
+    """Validate the incoming request data."""
+    if not data.get('conversation_id'):
+        raise ValueError('Missing conversation ID')
+    if not data.get('messages') or not isinstance(data.get('messages'), list):
+        raise ValueError('Invalid messages format')
+    return data['conversation_id'], data['messages'], data.get('model', 'gpt-4o')
+
+# Route to handle streaming chat
 @app.route('/api/stream_chat', methods=['POST'])
 def stream_chat():
     try:
         data = request.get_json()
-
-        # Extract conversation details
-        conversation_id = data.get('conversation_id')
-        messages = data.get('messages')
-        model = data.get('model', 'gpt-4o')
-
-        if not conversation_id or not messages or not isinstance(messages, list):
-            return jsonify({'error': 'Invalid conversation ID or messages'}), 400
+        conversation_id, messages, model = validate_request(data)
+        
+        # Process all messages
+        processed_messages = [process_message(msg) for msg in messages]
 
         # Get the bot's response generator
         def generate():
-            for chunk in get_bot_response_stream(messages, model):
-                # Convert the chunk to a JSON-formatted string
+            for chunk in get_bot_response_stream(processed_messages, model):
                 json_data = json.dumps(chunk)
-                # SSE format: data: <message>\n\n
                 yield f"data: {json_data}\n\n"
 
-        # Set appropriate headers for SSE
         headers = {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'X-Accel-Buffering': 'no'  # Disable buffering for Nginx
+            'X-Accel-Buffering': 'no'
         }
 
         return Response(generate(), headers=headers)
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
