@@ -5,10 +5,10 @@ import MessageBubble from './MessageBubble';
 import '../styles/ChatWindow.css';
 import botAvatar from '../assets/bot-avatar.png';
 
-const ChatWindow = ({ messages }) => {
+const ChatWindow = ({ messages = [] }) => {
     const chatWindowRef = useRef(null);
     const lastMessageRef = useRef(null);
-    const prevMessagesLengthRef = useRef(messages.length);
+    const prevMessagesLengthRef = useRef(0);
     const [showScrollButton, setShowScrollButton] = useState(false);
 
     // Optimized scroll position check
@@ -58,6 +58,8 @@ const ChatWindow = ({ messages }) => {
 
     // Message updates handler
     useEffect(() => {
+        if (!Array.isArray(messages)) return;
+        
         const isNewMessage = messages.length > prevMessagesLengthRef.current;
         
         if (isNewMessage) {
@@ -72,7 +74,7 @@ const ChatWindow = ({ messages }) => {
         handleScroll();
     }, [messages, isUserNearBottom, scrollToBottom, handleScroll]);
 
-    if (!messages || messages.length === 0) {
+    if (!Array.isArray(messages) || messages.length === 0) {
         return (
             <div className="chat-window-empty">
                 <div className="empty-state-content">
