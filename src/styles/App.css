@@ -3,15 +3,15 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: #f7f7f8; /* Light background for chat */
-    overflow: hidden; /* Prevent page scroll */
+    background-color: #f7f7f8;
+    overflow: hidden;
 }
 
 .main-content {
     display: flex;
     flex: 1;
-    height: calc(100vh - 60px); /* Leave space for header */
-    overflow: hidden; /* Prevent scrolling the whole page */
+    height: calc(100vh - 60px);
+    overflow: hidden;
 }
 
 /* Parent container for chat window and input */
@@ -20,16 +20,24 @@
     flex-direction: column;
     flex: 1;
     background-color: #ffffff;
-    overflow: hidden; /* Prevent overflow from large content */
+    overflow: hidden;
+    max-width: calc(100vw - 220px);
+    position: relative;
 }
 
 /* Wrapper for both chat window and input */
 .chat-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Ensure input is at the bottom */
+    justify-content: space-between;
     width: 100%;
     height: 100%;
-    margin: 0 auto;
-    padding-bottom: 0; /* Ensure no extra padding at the bottom */
+    position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-container {
+        max-width: 100%;
+    }
 }
