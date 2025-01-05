@@ -1,1 +1,5 @@
 threshold: medium
+fileignoreconfig:
+- filename: yarn.lock
+  checksum: 8cf682f2b530c7a4cbd2ba5e1b0dc663e966a0148a6f9a4c91946df21b83e327
+version: ""
