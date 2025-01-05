@@ -1,54 +1,128 @@
+/* Container structure */
+.chat-window-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Chat Window */
 .chat-window {
-    flex-grow: 1;
-    width: 100%; /* Full width inside wrapper */
-    max-width: none; /* Allow chat window to take full available space */
-    padding: 20px;
-    background-color: #FAFBFC; /* Very light background color for readability */
-    border-radius: 8px;
-    box-shadow: none;
-    overflow-y: auto; /* Allow vertical scrolling */
+    flex: 1;
+    overflow-y: scroll;
+    width: 100%;
     box-sizing: border-box;
-    margin-bottom: 80px;
-    scrollbar-width: thin; /* Keep the scrollbar on the right */
+    scroll-behavior: smooth;
+    padding: 0;
+    /* Force scrollbar to always be visible */
+    scrollbar-gutter: stable;
+    -ms-overflow-style: scrollbar;
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #FAFBFC;
+    border-radius: 8px;
+}
+
+.message-wrapper {
+    width: 100%;
+    min-height: 20px;
 }
 
 /* Scrollbar styling */
 .chat-window::-webkit-scrollbar {
     width: 8px;
+    display: block;
+}
+
+.chat-window::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .chat-window::-webkit-scrollbar-thumb {
-    background-color: #ccc;
+    background-color: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
+    min-height: 40px;
 }
 
-.chat-content {
-    max-width: 800px; /* Keep the content within best practice reading width */
-    margin: 0 auto; /* Center the content */
-    padding: 0 20px; /* Add padding to ensure space on smaller screens */
-    box-sizing: border-box;
+.chat-window::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
 }
-/* Empty Chat Window State */
+
+/* Firefox scrollbar styling */
+.chat-window {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Scroll button */
+.scroll-bottom-button {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.scroll-bottom-button:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.scroll-bottom-button svg {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+/* Empty state */
 .chat-window-empty {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 100%;
     font-size: 18px;
     color: #999;
+    background-color: #FAFBFC;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.empty-state-content {
     text-align: center;
     padding: 20px;
 }
 
-/* Bot Avatar Styling */
 .bot-avatar-empty {
-    width: 120px; /* Adjust the size as needed */
+    width: 120px;
     margin-bottom: 20px;
     padding: 15px;
 }
 
-/* Text for empty chat state */
-.empty-state-content p {
-    color: #666; /* Slightly darker grey for text */
+/* Ensure smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+    .chat-window {
+        scroll-behavior: smooth;
+    }
 }

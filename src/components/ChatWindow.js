@@ -1,19 +1,76 @@
 // ChatWindow.js
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import MessageBubble from './MessageBubble';
 import '../styles/ChatWindow.css';
-import botAvatar from '../assets/bot-avatar.png'; // Adjust path according to your file structure
+import botAvatar from '../assets/bot-avatar.png';
 
 const ChatWindow = ({ messages }) => {
     const chatWindowRef = useRef(null);
+    const lastMessageRef = useRef(null);
+    const prevMessagesLengthRef = useRef(messages.length);
+    const [showScrollButton, setShowScrollButton] = useState(false);
 
-    // Smooth scrolling when new messages are added
-    useEffect(() => {
-        if (chatWindowRef.current) {
-            chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+    // Optimized scroll position check
+    const isUserNearBottom = useCallback(() => {
+        if (!chatWindowRef.current) return true;
+        const { scrollTop, scrollHeight, clientHeight } = chatWindowRef.current;
+        return scrollHeight - (scrollTop + clientHeight) <= 1;
+    }, []);
+
+    // Debounced scroll handler
+    const handleScroll = useCallback(() => {
+        if (!chatWindowRef.current) return;
+        const shouldShowButton = !isUserNearBottom();
+        if (shouldShowButton !== showScrollButton) {
+            setShowScrollButton(shouldShowButton);
         }
-    }, [messages]);
+    }, [isUserNearBottom, showScrollButton]);
+
+    // Optimized scroll to bottom
+    const scrollToBottom = useCallback(() => {
+        if (chatWindowRef.current) {
+            chatWindowRef.current.scrollTo({
+                top: chatWindowRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+            setShowScrollButton(false);
+        }
+    }, []);
+
+    // Scroll event listener with cleanup
+    useEffect(() => {
+        const chatWindow = chatWindowRef.current;
+        if (!chatWindow) return;
+
+        let scrollTimeout;
+        const debouncedScroll = () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(handleScroll, 100);
+        };
+
+        chatWindow.addEventListener('scroll', debouncedScroll);
+        return () => {
+            clearTimeout(scrollTimeout);
+            chatWindow.removeEventListener('scroll', debouncedScroll);
+        };
+    }, [handleScroll]);
+
+    // Message updates handler
+    useEffect(() => {
+        const isNewMessage = messages.length > prevMessagesLengthRef.current;
+        
+        if (isNewMessage) {
+            if (isUserNearBottom()) {
+                scrollToBottom();
+            } else {
+                setShowScrollButton(true);
+            }
+        }
+
+        prevMessagesLengthRef.current = messages.length;
+        handleScroll();
+    }, [messages, isUserNearBottom, scrollToBottom, handleScroll]);
 
     if (!messages || messages.length === 0) {
         return (
@@ -25,16 +82,50 @@ const ChatWindow = ({ messages }) => {
             </div>
         );
     }
+
     return (
-        <div className="chat-window" ref={chatWindowRef}>
-            <div className="chat-content">
-                {messages.map((message, index) => (
-                    <MessageBubble key={index} message={message} role={message.role} />
-                ))}
+        <div className="chat-window-container">
+            <div 
+                className="chat-window" 
+                ref={chatWindowRef}
+            >
+                <div className="chat-content">
+                    {messages.map((message, index) => (
+                        <div
+                            key={`${message.role}-${index}`}
+                            ref={index === messages.length - 1 ? lastMessageRef : null}
+                            className="message-wrapper"
+                        >
+                            <MessageBubble 
+                                message={message} 
+                                role={message.role} 
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
+            {showScrollButton && (
+                <button 
+                    className="scroll-bottom-button"
+                    onClick={scrollToBottom}
+                    aria-label="Scroll to bottom"
+                >
+                    <svg 
+                        width="24" 
+                        height="24" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                    >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            )}
         </div>
     );
-
 };
 
-export default ChatWindow;
+export default React.memo(ChatWindow);

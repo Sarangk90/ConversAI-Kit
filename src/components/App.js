@@ -190,6 +190,30 @@ function App() {
         }
     };
 
+    // Helper function to update messages in the UI
+    const updateMessagesInUI = (conversationId, updatedMessages) => {
+        setMessagesByConversation((prev) => ({
+            ...prev,
+            [conversationId]: [...updatedMessages],
+        }));
+
+        if (conversationId === currentConversationId) {
+            setMessages([...updatedMessages]);
+        }
+    };
+
+    // Simple throttle function
+    const throttleUpdate = (callback, limit = 200) => {
+        let lastExecutionTime = 0;
+        return (...args) => {
+            const now = Date.now();
+            if (now - lastExecutionTime >= limit) {
+                callback(...args);
+                lastExecutionTime = now;
+            }
+        };
+    };
+
     // Function to handle processing each chunk of the bot's response
     const processStreamChunk = (chunkValue, assistantMessage, updatedMessages, conversationId) => {
         let buffer = chunkValue;
@@ -210,7 +234,6 @@ function App() {
                             updateMessagesInUI(conversationId, updatedMessages);
                         } else if (data.error) {
                             console.error('Error from server:', data.error);
-                            alert('Error from server: ' + data.error);
                             throw new Error(data.error);
                         }
                     } catch (e) {
@@ -220,38 +243,13 @@ function App() {
             }
         }
 
-        // Return the remaining part of the buffer (incomplete lines)
         return lines[lines.length - 1];
-    };
-
-    // Helper function to update messages in the UI
-    const updateMessagesInUI = (conversationId, updatedMessages) => {
-        setMessagesByConversation((prev) => ({
-            ...prev,
-            [conversationId]: [...updatedMessages],
-        }));
-
-        if (conversationId === currentConversationId) {
-            setMessages([...updatedMessages]);
-        }
-    };
-
-    // Throttled update function for smooth message display
-    const throttleUpdate = (callback, limit = 200) => {
-        let lastExecutionTime = 0;
-        return (...args) => {
-            const now = Date.now();
-            if (now - lastExecutionTime >= limit) {
-                callback(...args);
-                lastExecutionTime = now;
-            }
-        };
     };
 
     // Function to stream bot responses and update the conversation
     const streamBotResponse = async (conversationId, updatedMessages, model) => {
         const controller = new AbortController();
-        setAbortController(controller); // Store the controller for later use
+        setAbortController(controller);
 
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.STREAM_CHAT}`, {
@@ -262,7 +260,7 @@ function App() {
                     messages: updatedMessages,
                     model: model,
                 }),
-                signal: controller.signal, // Pass the signal to the fetch request
+                signal: controller.signal,
             });
 
             if (!response.ok) {
@@ -274,25 +272,24 @@ function App() {
 
             const throttledUpdate = throttleUpdate((newMessages) => {
                 updateMessagesInUI(conversationId, newMessages);
-            }, 250);
+            });
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder('utf-8');
-            let done = false;
             let buffer = '';
 
-            while (!done) {
-                const { value, done: doneReading } = await reader.read();
-                done = doneReading;
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
 
                 if (value) {
                     const chunkValue = decoder.decode(value);
                     buffer = processStreamChunk(chunkValue, assistantMessage, updatedMessages, conversationId);
-
                     throttledUpdate(updatedMessages);
                 }
             }
 
+            // Final update
             updateMessagesInUI(conversationId, updatedMessages);
             return updatedMessages;
 
@@ -304,11 +301,9 @@ function App() {
             }
             return updatedMessages;
         } finally {
-            setAbortController(null); // Reset the controller after streaming completes
-
-            // Ensure the resetButton is always called, even after an error or abortion
+            setAbortController(null);
             if (messageInputRef.current) {
-                messageInputRef.current.resetButton(); // Reset button to "Send"
+                messageInputRef.current.resetButton();
             }
         }
     };
