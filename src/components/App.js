@@ -5,6 +5,16 @@ import MessageInput from './MessageInput';
 import '../styles/App.css';
 import {useLocation, useNavigate} from "react-router-dom";
 
+// API Configuration
+const API_CONFIG = {
+    BASE_URL: 'http://localhost:5001',
+    ENDPOINTS: {
+        CONVERSATIONS: '/api/conversations',
+        GENERATE_NAME: '/api/generate_name',
+        STREAM_CHAT: '/api/stream_chat'
+    }
+};
+
 function App() {
     // State variables
     const [messages, setMessages] = useState([]);
@@ -58,7 +68,7 @@ function App() {
     // Fetch all conversations (IDs and names) from the backend
     const fetchConversationsFromBackend = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/conversations');
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}`);
             const conversationsData = await response.json();
 
             // Sort conversations by lastUpdated in descending order
@@ -73,7 +83,7 @@ function App() {
     // Fetch messages for a specific conversation from the backend
     const fetchMessagesForConversation = async (conversationId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/conversations/${conversationId}`);
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}/${conversationId}`);
             const data = await response.json();
 
             // Update messagesByConversation
@@ -96,7 +106,7 @@ function App() {
 
     const saveConversationToBackend = async (conversation) => {
         try {
-            const response = await fetch('http://localhost:5000/api/conversations', {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -145,7 +155,7 @@ function App() {
     // Generate a conversation name based on the first message
     const generateConversationName = async (message) => {
         try {
-            const response = await fetch('http://localhost:5000/api/generate_name', {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.GENERATE_NAME}`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({message}),
@@ -244,7 +254,7 @@ function App() {
         setAbortController(controller); // Store the controller for later use
 
         try {
-            const response = await fetch('http://localhost:5000/api/stream_chat', {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.STREAM_CHAT}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
