@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Sidebar.css';
 import pencilIcon from '../assets/pencil-icon.png';
 
@@ -29,19 +29,48 @@ const groupConversationsByDate = (conversations) => {
 };
 
 const Sidebar = ({ conversations, onSelectConversation, onNewConversation, currentConversationId }) => {
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const groupedConversations = groupConversationsByDate(conversations);
 
+    // Add event listener to handle class changes
+    useEffect(() => {
+        const sidebarElement = document.querySelector('.sidebar');
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                    setIsCollapsed(sidebarElement.classList.contains('collapsed'));
+                }
+            });
+        });
+        
+        observer.observe(sidebarElement, { attributes: true });
+        
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="sidebar-header">
                 <button className="new-chat-btn" onClick={onNewConversation}>
-                    <img src={pencilIcon} alt="New Chat Icon" />
-                    + New Chat
+                    <svg
+                        stroke="currentColor"
+                        fill="none"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        height="16"
+                        width="16"
+                    >
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    {!isCollapsed && <span>New chat</span>}
                 </button>
             </div>
 
             <div className="sidebar-content">
-                {Object.keys(groupedConversations).map((group) => (
+                {!isCollapsed && Object.keys(groupedConversations).map((group) => (
                     <div key={group} className="conversation-group">
                         <div className="conversation-group-header">{group}</div>
                         {groupedConversations[group].map((conversation) => (
@@ -56,6 +85,29 @@ const Sidebar = ({ conversations, onSelectConversation, onNewConversation, curre
                     </div>
                 ))}
             </div>
+
+            <button 
+                className="collapse-button" 
+                onClick={() => setIsCollapsed(!isCollapsed)}
+                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    {isCollapsed ? (
+                        <path d="M13 19l-6-6 6-6" />
+                    ) : (
+                        <path d="M19 19l-6-6 6-6" />
+                    )}
+                </svg>
+            </button>
         </div>
     );
 };

@@ -476,6 +476,24 @@ function App() {
                     onNewConversation={createNewConversation}
                     currentConversationId={currentConversationId}
                 />
+                <button 
+                    className="expand-sidebar-button"
+                    onClick={() => document.querySelector('.sidebar').classList.remove('collapsed')}
+                    title="Show sidebar"
+                >
+                    <svg
+                        width="8"
+                        height="24"
+                        viewBox="0 0 8 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <path d="M6 3L1 12L6 21" />
+                    </svg>
+                </button>
                 <div className="chat-container">
                     <div className="chat-wrapper">
                         <ChatWindow

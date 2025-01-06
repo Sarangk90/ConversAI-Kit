@@ -24,12 +24,11 @@
 .chat-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #FAFBFC;
-    border-radius: 8px;
+    margin: 0 auto;
+    padding: 16px;
+    background-color: #ffffff;
 }
 
 .message-wrapper {
