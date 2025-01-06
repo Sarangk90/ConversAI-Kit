@@ -54,10 +54,12 @@ body {
 
 /* User messages */
 .message-bubble.user {
-    background-color: #007AFF;
-    color: white;
+    background-color: rgba(0, 122, 255, 0.08);  /* Very light blue background */
+    color: #666;  /* Muted text color */
     margin-left: auto;
     max-width: 80%;
+    font-size: 14px;  /* Slightly smaller font */
+    padding: 8px 12px;  /* Compact padding */
 }
 
 /* Images in messages */
