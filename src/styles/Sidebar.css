@@ -1,145 +1,185 @@
 /* Sidebar container */
 .sidebar {
-    width: 220px;
-    background-color: #1F2937; /* Slate Grey background for a more neutral look */
-    color: #E5E7EB; /* Light grey text for better readability */
+    width: 260px;
+    background-color: #202123;
+    color: #E5E7EB;
     display: flex;
     flex-direction: column;
-    padding: 15px 10px;
-    border-right: 1px solid #333;
+    padding: 8px;
     height: 100vh;
-    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
 }
 
-/* Sidebar Header (New Chat Button) */
+/* Collapsed state */
+.sidebar.collapsed {
+    width: 50px;
+}
+
+/* Collapse button styling - only visible in expanded state */
+.collapse-button {
+    background: transparent;
+    border: none;
+    color: #6B7280;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    height: 32px;
+    width: 32px;
+    margin-top: auto;  /* Push to bottom */
+}
+
+/* Hide collapse button in collapsed state */
+.sidebar.collapsed .collapse-button {
+    display: none;
+}
+
+.collapse-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Header */
 .sidebar-header {
+    padding: 0;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    width: 100%;
 }
 
-/* New Chat Button Styling */
 /* New Chat Button Styling */
 .sidebar button.new-chat-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(145deg, #4677C2, #6A91D6); /* Brighter blue and sky blue gradient */
-    color: white;
-    padding: 10px 14px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 20px;
-    border: none;
-    margin-bottom: 20px;
+    justify-content: flex-start;
+    gap: 12px;
+    background-color: rgba(52, 53, 65, 1);  /* Darker background */
+    color: #ECECF1;
+    padding: 12px 16px;
+    font-size: 15px;  /* Larger font */
+    line-height: 24px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    transition: all 0.15s ease;  /* Faster transition */
     width: 100%;
-    max-width: 200px; /* Limit button width */
+    max-width: 244px;  /* Fixed width for better centering */
+    white-space: nowrap;
 }
 
-/* Hover effect for New Chat button */
 .sidebar button.new-chat-btn:hover {
-    background: linear-gradient(145deg, #3565AA, #5585C4); /* Slightly darker blue on hover */
-    transform: scale(1.05); /* Slight scaling on hover */
-    box-shadow: 0 6
+    background-color: rgba(52, 53, 65, 0.7);
 }
 
-.sidebar button.new-chat-btn img {
-    margin-right: 10px;
-    width: 18px;
-    height: 18px;
+/* Collapsed state styling */
+.sidebar.collapsed {
+    padding: 8px 8px;  /* Even padding */
 }
 
+.sidebar.collapsed .sidebar-header {
+    margin-bottom: 0;
+}
 
-/* Sidebar content to hold conversation list */
+.sidebar.collapsed button.new-chat-btn {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    justify-content: center;
+    margin: 0;
+    border-radius: 6px;
+    background-color: transparent;
+    border: none;
+}
+
+.sidebar.collapsed button.new-chat-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+/* Hide text in collapsed state */
+.sidebar.collapsed .new-chat-btn span {
+    display: none;
+}
+
+/* Make the plus icon slightly larger and bolder */
+.sidebar button.new-chat-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.5;  /* Slightly bolder */
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed button.new-chat-btn svg {
+    width: 20px;  /* Larger in collapsed state */
+    height: 20px;
+    stroke-width: 2;  /* Slightly thinner for better visibility */
+}
+
+/* Sidebar content */
 .sidebar-content {
     flex-grow: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 8px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar.collapsed .sidebar-content {
+    opacity: 0;
+    margin-top: 48px; /* Space for collapsed header */
+}
+
+/* Conversation styling */
+.conversation {
     display: flex;
-    flex-direction: column;
-    padding-right: 5px;
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #ECECF1;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.conversation:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.conversation.active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Conversation group header styling */
 .conversation-group-header {
-    font-size: 14px;
-    font-weight: normal;
-    color: #9CA3AF; /* Softer light grey for group headers */
-    margin: 12px 0 6px 0;
-    padding-left: 10px;
-}
-
-/* Conversation Button Styling */
-.sidebar button.conversation {
-    display: block;
-    background-color: transparent;
-    color: #E5E7EB; /* Lighter grey for inactive text */
-    width: 100%;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 6px;
-    text-align: left;
-    font-size: 15px;
+    font-size: 12px;
+    color: #8E8EA0;
+    padding: 8px 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
     font-weight: 500;
-    margin-bottom: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-    flex-shrink: 0;
 }
 
-/* Hover and active state styling */
-.sidebar button.conversation:hover {
-    background-color: #3B82F6; /* Muted blue for hover */
-}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        z-index: 1000;
+        transform: translateX(0);
+    }
 
-.sidebar button.conversation.active {
-    background-color: #E5E7EB; /* Light grey for active conversation */
-    color: #1F2937; /* Slate grey for active text */
-    border-left: 3px solid #007B83; /* Teal accent for active state */
-    box-shadow: inset 0 0 8px rgba(0, 122, 255, 0.2);
-}
-
-/* Scrollbar Styling */
-.sidebar-content::-webkit-scrollbar {
-    width: 4px; /* Thinner scrollbar */
-}
-
-.sidebar-content::-webkit-scrollbar-thumb {
-    background-color: #4A5568; /* Less prominent grey for the scrollbar */
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-/* Hover effect on scrollbar to make it slightly more prominent */
-.sidebar-content::-webkit-scrollbar-thumb:hover {
-    background-color: #718096; /* Slightly brighter grey on hover */
-}
-
-/* Smooth transition for sidebar buttons */
-.sidebar button.conversation {
-    display: block;
-    background-color: transparent;
-    color: #E5E7EB;
-    width: 100%;
-    padding: 8px 10px;
-    border: none;
-    border-radius: 6px;
-    text-align: left;
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Smooth color transition */
-}
-
-.sidebar button.conversation:hover {
-    background-color: #3B82F6;
-    color: #FFFFFF;
-    transition: background-color 0.3s ease-in-out;
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
 }

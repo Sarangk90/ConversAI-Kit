@@ -99,6 +99,9 @@ const MessageBubble = React.memo(({ message, role }) => {
                                     return (
                                         <div className="code-block-wrapper">
                                             <div className="code-block-header">
+                                                <span className="code-block-language">
+                                                    {match[1]}
+                                                </span>
                                                 <button
                                                     className="copy-button"
                                                     onClick={() => copyToClipboard(codeString, node.position?.start.line)}
