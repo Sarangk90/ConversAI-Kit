@@ -7,21 +7,24 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Initialize the client with error checking
-api_key = os.getenv('OPENAI_API_KEY')
-api_base = os.getenv('OPENAI_API_BASE')
+def get_openai_client():
+    # Initialize the client with error checking
+    api_key = os.getenv('OPENAI_API_KEY')
+    api_base = os.getenv('OPENAI_API_BASE')
 
-if not api_key:
-    raise ValueError("OPENAI_API_KEY environment variable is not set")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY environment variable is not set")
+
+    return OpenAI(
+        api_key=api_key,
+        base_url=api_base  # This is optional, only if you're using a custom API endpoint
+    )
 
 # Initialize the client
-client = OpenAI(
-    api_key=api_key,
-    base_url=api_base  # This is optional, only if you're using a custom API endpoint
-)
+client = get_openai_client()
 
-print(f"API Key present: {bool(api_key)}")
-print(f"API Base present: {bool(api_base)}")
+print(f"API Key present: {bool(os.getenv('OPENAI_API_KEY'))}")
+print(f"API Base present: {bool(os.getenv('OPENAI_API_BASE'))}")
 
 # Function to get bot response using GPT-4
 def get_bot_response(user_message):
