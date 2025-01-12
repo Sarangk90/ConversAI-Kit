@@ -6,17 +6,21 @@ A comprehensive, modern AI chat platform with a React frontend and Python backen
 
 Current:
 - 🎯 Modern, responsive React-based UI
-- 💬 Real-time chat interactions
+- 💬 Real-time chat with streaming responses
 - 🤖 Multiple model support (OpenAI integration)
 - 🖼️ Image handling capabilities
 - 🔒 Secure environment configuration
+- 📝 Automatic conversation naming
+- 📚 Conversation history and management
+- 🚀 FastAPI backend with type safety
+- 📖 Interactive API documentation
 
 Planned:
 - 🧠 Multiple LLM integrations (GPT-4, Claude, Llama)
 - 📄 Document processing (RAG)
 - 📚 Custom knowledge base integration
 - 🔄 Multi-modal conversations
-- 💾 Conversation memory and context
+- 💾 Enhanced conversation memory and context
 
 ## Prerequisites
 
@@ -33,8 +37,12 @@ ConversAI-Kit/
 │   ├── src/            # Source files
 │   ├── public/         # Static files
 │   └── package.json    # Frontend dependencies
-├── chatbot-api/        # Python Flask backend
-│   ├── app.py         # Main application
+├── chatbot-api/        # Python FastAPI backend
+│   ├── src/           # Source files
+│   │   ├── app.py    # Main FastAPI application
+│   │   ├── chat.py   # Chat logic
+│   │   └── database.py# Database operations
+│   ├── tests/        # Test files
 │   └── requirements.txt# Backend dependencies
 ```
 
@@ -70,11 +78,18 @@ ConversAI-Kit/
    pip install -r requirements.txt
    ```
 
-3. Start the server:
+3. Configure environment:
    ```bash
-   python app.py
+   cp .env.example .env
+   # Edit .env with your settings
    ```
-   The API will be available at http://localhost:5000
+
+4. Start the server:
+   ```bash
+   uvicorn src.app:app --reload --port 5001
+   ```
+   The API will be available at http://localhost:5001
+   API Documentation at http://localhost:5001/docs
 
 ## Development
 
@@ -109,4 +124,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Thanks to all contributors who help improve this project
-- Built with React, Flask, and OpenAI 
+- Built with React, FastAPI, and OpenAI 
