@@ -11,7 +11,7 @@ const API_CONFIG = {
     ENDPOINTS: {
         CONVERSATIONS: '/api/conversations',
         GENERATE_NAME: '/api/generate_name',
-        STREAM_CHAT: '/api/stream_chat'
+        STREAM_CHAT: '/chat/stream'
     }
 };
 
