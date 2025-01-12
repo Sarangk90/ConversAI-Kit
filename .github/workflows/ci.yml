@@ -16,7 +16,7 @@ jobs:
         working-directory: ./chatbot-ui
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -61,7 +61,7 @@ jobs:
         working-directory: ./chatbot-api
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -98,7 +98,7 @@ jobs:
     needs: [frontend, backend]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Run security scan
         uses: snyk/actions/node@master
