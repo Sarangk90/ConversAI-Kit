@@ -13,15 +13,10 @@ Current:
 
 Planned:
 - 🧠 Multiple LLM integrations (GPT-4, Claude, Llama)
-- 🎤 Voice interactions
-- 🎨 Image generation and analysis
 - 📄 Document processing (RAG)
 - 📚 Custom knowledge base integration
 - 🔄 Multi-modal conversations
 - 💾 Conversation memory and context
-- 🔌 Plugin system
-- 📊 Analytics dashboard
-- ⚡ Fine-tuning capabilities
 
 ## Prerequisites
 
@@ -63,29 +58,19 @@ ConversAI-Kit/
    The UI will be available at http://localhost:3000
 
 ### Backend (chatbot-api)
-1. Navigate to the backend directory:
+1. Create and activate a virtual environment:
    ```bash
    cd chatbot-api
-   ```
-
-2. Create and activate a virtual environment (recommended):
-   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install dependencies:
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your OpenAI API key and other configurations
-   ```
-
-5. Start the server:
+3. Start the server:
    ```bash
    python app.py
    ```
