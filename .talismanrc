@@ -1,5 +1,5 @@
 threshold: medium
 fileignoreconfig:
-- filename: yarn.lock
-  checksum: 8cf682f2b530c7a4cbd2ba5e1b0dc663e966a0148a6f9a4c91946df21b83e327
+- filename: chatbot-ui/yarn.lock
+  checksum: 5c48c11043581001bed2d5daec2f09130226b7bf6effac5111d8ba678afd266a
 version: ""
