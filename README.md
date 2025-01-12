@@ -1,13 +1,33 @@
-# My Chatbot Project
+# ConversAI-Kit
 
-A modern chatbot application with a React frontend and Python backend.
+A comprehensive, modern AI chat platform with a React frontend and Python backend. Build powerful conversational experiences with multiple AI models, voice interactions, and multi-modal capabilities.
 
 ## Project Structure
 
 This repository contains two main components:
 
-- `chatbot-ui/`: React-based frontend application
-- `chatbot-api/`: Python-based backend API
+- `chatbot-ui/`: Modern React-based frontend application
+- `chatbot-api/`: Scalable Python backend API
+
+## Features
+
+Current:
+- Modern, responsive UI
+- Real-time chat interactions
+- Multiple model support
+- Image handling capabilities
+
+Planned:
+- Multiple LLM integrations (GPT-4, Claude, Llama)
+- Voice interactions
+- Image generation and analysis
+- Document processing (RAG)
+- Custom knowledge base integration
+- Multi-modal conversations
+- Conversation memory and context
+- Plugin system
+- Analytics dashboard
+- Fine-tuning capabilities
 
 ## Getting Started
 
