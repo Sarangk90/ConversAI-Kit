@@ -1,0 +1,47 @@
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "frontend"
+  color: "fbca04"
+  description: "Frontend related changes"
+
+- name: "backend"
+  color: "0052cc"
+  description: "Backend related changes"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency file"
+
+- name: "security"
+  color: "ee0701"
+  description: "Security related changes"
+
+- name: "performance"
+  color: "16c60c"
+  description: "Performance improvements"
+
+- name: "testing"
+  color: "ffb86c"
+  description: "Testing related changes" 
