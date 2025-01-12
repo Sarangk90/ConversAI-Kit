@@ -1,0 +1,302 @@
+/* Global Font Settings */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Avatar Styling */
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 12px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+
+/* Message Bubble Container */
+.message-bubble-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    width: 100%;
+    position: relative;
+    padding: 0 24px;
+}
+
+/* General message bubble styling */
+.message-bubble {
+    color: #1a1a1a;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 400;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Bot messages */
+.message-bubble.bot {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    width: calc(100% - 52px); /* Account for avatar */
+    margin-right: auto;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* User messages */
+.message-bubble.user {
+    background-color: #f7f7f8;  /* Very subtle gray */
+    color: #1a1a1a;  /* Same dark color as bot messages */
+    margin-left: auto;
+    max-width: 85%;
+    font-size: 15px;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+/* Images in messages */
+.message-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+    order: -1; /* Show images before text */
+    max-width: 400px; /* Limit maximum width of image container */
+}
+
+.message-image {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 16/9; /* Maintain consistent aspect ratio */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.message-image:hover {
+    transform: scale(1.02);
+}
+
+.message-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* Specific styling for user message images */
+.message-bubble.user .message-image {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Bot message images */
+.message-bubble.bot .message-image {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Message actions (copy button) */
+.message-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+.message-copy-button {
+    background: transparent;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #666;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-copy-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+/* Code block styling */
+.code-block-wrapper {
+    position: relative;
+    margin: 0.5em 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #282c34;
+}
+
+.code-block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    color: #808080;
+    font-size: 0.85em;
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+}
+
+.syntax-highlighter-wrapper {
+    padding: 12px 16px;  /* More padding around code */
+}
+
+.copy-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: #808080;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+}
+
+.copy-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Add "Copy code" text after the icon */
+.copy-button::after {
+    content: "Copy code";
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Inline code styling */
+.message-bubble :not(pre) > code {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: inherit;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9em;
+}
+
+.message-bubble.user :not(pre) > code {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Markdown content styling */
+.message-bubble p {
+    margin: 0 0 1em 0;
+}
+
+.message-bubble p:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .message-bubble {
+        max-width: 85%;
+        font-size: 14px;
+    }
+
+    .message-image {
+        max-width: 150px;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+    }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+    .message-bubble.bot {
+        background-color: #ffffff;
+        color: #1a1a1a;
+        border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .message-bubble.user {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #1a1a1a;  /* Keep dark text in dark mode too */
+    }
+
+    /* Only code blocks should be dark */
+    .message-bubble.bot .code-block-wrapper {
+        background-color: #282c34;
+        color: #abb2bf;
+    }
+}
+
+/* Image Modal Styles */
+.image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.image-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-modal-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    transition: background-color 0.2s ease;
+}
+
+.image-modal-close:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Language indicator */
+.code-block-language {
+    text-transform: lowercase;
+    color: #808080;
+    font-size: 0.85em;
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+}
+

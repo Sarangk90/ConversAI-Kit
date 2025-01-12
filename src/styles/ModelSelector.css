@@ -1,0 +1,16 @@
+.model-selector {
+    margin-right: 10px;
+  }
+  
+  .model-selector select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+  }
+  
+  .model-selector select:focus {
+    outline: none;
+    border-color: #007aff;
+  }
