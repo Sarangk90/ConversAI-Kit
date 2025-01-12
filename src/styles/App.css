@@ -1,0 +1,105 @@
+/* Main container layout */
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Parent container for chat window and input */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #ffffff;
+    overflow: hidden;
+    position: relative;
+    margin-left: 0;
+    width: 100%;
+}
+
+/* Adjust chat container when sidebar is collapsed */
+.sidebar + .chat-container {
+    margin-left: -260px;
+    transform: translateX(260px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed + .chat-container {
+    margin-left: -50px;
+    transform: translateX(50px);
+}
+
+/* Expand button that appears when sidebar is collapsed */
+.expand-sidebar-button {
+    position: fixed;
+    left: 50px;  /* Aligns with collapsed sidebar width */
+    top: 0;
+    width: 20px;
+    height: 100vh;
+    background-color: transparent;
+    border: none;
+    color: #6B7280;
+    cursor: pointer;
+    display: none;  /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: all 0.2s ease;
+}
+
+/* Add a visual indicator for the expand button */
+.expand-sidebar-button::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: #e5e5e5;
+    opacity: 0.2;
+}
+
+.expand-sidebar-button:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.expand-sidebar-button:hover::after {
+    opacity: 0.4;
+}
+
+/* Show expand button when sidebar is collapsed */
+.sidebar.collapsed ~ .expand-sidebar-button {
+    display: flex;
+}
+
+/* Wrapper for both chat window and input */
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-container {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    .expand-sidebar-button {
+        left: 8px;
+    }
+}

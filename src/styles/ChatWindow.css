@@ -1,0 +1,127 @@
+/* Container structure */
+.chat-window-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Window */
+.chat-window {
+    flex: 1;
+    overflow-y: scroll;
+    width: 100%;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    padding: 0;
+    /* Force scrollbar to always be visible */
+    scrollbar-gutter: stable;
+    -ms-overflow-style: scrollbar;
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+    background-color: #ffffff;
+}
+
+.message-wrapper {
+    width: 100%;
+    min-height: 20px;
+}
+
+/* Scrollbar styling */
+.chat-window::-webkit-scrollbar {
+    width: 8px;
+    display: block;
+}
+
+.chat-window::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    min-height: 40px;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox scrollbar styling */
+.chat-window {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Scroll button */
+.scroll-bottom-button {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.scroll-bottom-button:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.scroll-bottom-button svg {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+/* Empty state */
+.chat-window-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 18px;
+    color: #999;
+    background-color: #FAFBFC;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.empty-state-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.bot-avatar-empty {
+    width: 120px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+/* Ensure smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+    .chat-window {
+        scroll-behavior: smooth;
+    }
+}

@@ -1,0 +1,185 @@
+/* Sidebar container */
+.sidebar {
+    width: 260px;
+    background-color: #202123;
+    color: #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    height: 100vh;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+    width: 50px;
+}
+
+/* Collapse button styling - only visible in expanded state */
+.collapse-button {
+    background: transparent;
+    border: none;
+    color: #6B7280;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    height: 32px;
+    width: 32px;
+    margin-top: auto;  /* Push to bottom */
+}
+
+/* Hide collapse button in collapsed state */
+.sidebar.collapsed .collapse-button {
+    display: none;
+}
+
+.collapse-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    padding: 0;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* New Chat Button Styling */
+.sidebar button.new-chat-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    background-color: rgba(52, 53, 65, 1);  /* Darker background */
+    color: #ECECF1;
+    padding: 12px 16px;
+    font-size: 15px;  /* Larger font */
+    line-height: 24px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.15s ease;  /* Faster transition */
+    width: 100%;
+    max-width: 244px;  /* Fixed width for better centering */
+    white-space: nowrap;
+}
+
+.sidebar button.new-chat-btn:hover {
+    background-color: rgba(52, 53, 65, 0.7);
+}
+
+/* Collapsed state styling */
+.sidebar.collapsed {
+    padding: 8px 8px;  /* Even padding */
+}
+
+.sidebar.collapsed .sidebar-header {
+    margin-bottom: 0;
+}
+
+.sidebar.collapsed button.new-chat-btn {
+    width: 34px;
+    height: 34px;
+    min-height: 34px;
+    padding: 0;
+    justify-content: center;
+    margin: 0;
+    border-radius: 6px;
+    background-color: transparent;
+    border: none;
+}
+
+.sidebar.collapsed button.new-chat-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+/* Hide text in collapsed state */
+.sidebar.collapsed .new-chat-btn span {
+    display: none;
+}
+
+/* Make the plus icon slightly larger and bolder */
+.sidebar button.new-chat-btn svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.5;  /* Slightly bolder */
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed button.new-chat-btn svg {
+    width: 20px;  /* Larger in collapsed state */
+    height: 20px;
+    stroke-width: 2;  /* Slightly thinner for better visibility */
+}
+
+/* Sidebar content */
+.sidebar-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 8px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar.collapsed .sidebar-content {
+    opacity: 0;
+    margin-top: 48px; /* Space for collapsed header */
+}
+
+/* Conversation styling */
+.conversation {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #ECECF1;
+    cursor: pointer;
+    text-align: left;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.conversation:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.conversation.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Conversation group header styling */
+.conversation-group-header {
+    font-size: 12px;
+    color: #8E8EA0;
+    padding: 8px 12px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        z-index: 1000;
+        transform: translateX(0);
+    }
+
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+}
