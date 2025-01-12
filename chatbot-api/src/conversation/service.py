@@ -9,9 +9,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class ConversationService:
     """Service for managing conversations"""
+
     repository: ConversationRepository
     ai_provider: AIProvider
 
@@ -30,7 +32,9 @@ class ConversationService:
         logger.info(f"Saving conversation: {conversation.conversation_id}")
         # Ensure last_updated is timezone-aware
         if conversation.last_updated.tzinfo is None:
-            conversation.last_updated = conversation.last_updated.replace(tzinfo=timezone.utc)
+            conversation.last_updated = conversation.last_updated.replace(
+                tzinfo=timezone.utc
+            )
         self.repository.save_conversation(conversation)
 
     def generate_name(self, message: str) -> str:
@@ -38,15 +42,21 @@ class ConversationService:
         logger.info("Generating conversation name")
         prompt = f"Generate a concise title (3-4 words) for a conversation that starts with this message: {message}"
         try:
-            response = self.ai_provider.generate_response([
-                Message(role="user", content=prompt, timestamp=datetime.now(timezone.utc))
-            ])
-            
+            response = self.ai_provider.generate_response(
+                [
+                    Message(
+                        role="user",
+                        content=prompt,
+                        timestamp=datetime.now(timezone.utc),
+                    )
+                ]
+            )
+
             # Limit to 3-4 words
             words = response.content.strip().split()
-            name = ' '.join(words[:4])
+            name = " ".join(words[:4])
             logger.info(f"Generated name: {name}")
             return name
         except Exception as e:
             logger.error(f"Error generating name: {str(e)}")
-            raise 
+            raise

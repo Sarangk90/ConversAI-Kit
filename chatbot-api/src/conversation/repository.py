@@ -5,14 +5,18 @@ from datetime import datetime, timezone
 from .models import Conversation, ConversationSummary
 from ..chat.models import Message
 
+
 class ConversationRepository(Protocol):
     """Protocol for conversation storage"""
+
     def get_conversations(self) -> List[ConversationSummary]: ...
     def get_conversation(self, conversation_id: str) -> Optional[Conversation]: ...
     def save_conversation(self, conversation: Conversation) -> None: ...
 
+
 class SQLiteConversationRepository:
     """SQLite implementation of ConversationRepository"""
+
     def __init__(self, db_path: str = "conversations.db"):
         self.db_path = db_path
         self._init_db()
@@ -20,7 +24,8 @@ class SQLiteConversationRepository:
     def _init_db(self):
         """Initialize the database schema"""
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS conversations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     conversation_id TEXT NOT NULL,
@@ -28,7 +33,8 @@ class SQLiteConversationRepository:
                     messages TEXT NOT NULL,
                     last_updated TEXT NOT NULL
                 )
-            """)
+            """
+            )
             conn.commit()
 
     def _ensure_utc(self, dt: datetime) -> datetime:
@@ -47,7 +53,7 @@ class SQLiteConversationRepository:
                 ConversationSummary(
                     conversation_id=row[0],
                     conversation_name=row[1],
-                    last_updated=self._ensure_utc(datetime.fromisoformat(row[2]))
+                    last_updated=self._ensure_utc(datetime.fromisoformat(row[2])),
                 )
                 for row in cursor.fetchall()
             ]
@@ -57,16 +63,16 @@ class SQLiteConversationRepository:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT conversation_id, conversation_name, messages, last_updated FROM conversations WHERE conversation_id = ?",
-                (conversation_id,)
+                (conversation_id,),
             )
             row = cursor.fetchone()
-            
+
             if not row:
                 return None
-            
+
             messages_data = json.loads(row[2])
             messages = []
-            
+
             for msg in messages_data:
                 content = msg["content"]
                 # Try to parse content if it's a string that might be JSON
@@ -78,33 +84,39 @@ class SQLiteConversationRepository:
                     except json.JSONDecodeError:
                         # Keep content as is if it's not valid JSON
                         pass
-                
-                messages.append(Message(
-                    role=msg["role"],
-                    content=content,
-                    model=msg.get("model"),
-                    timestamp=self._ensure_utc(datetime.fromisoformat(msg["timestamp"]))
-                ))
-            
+
+                messages.append(
+                    Message(
+                        role=msg["role"],
+                        content=content,
+                        model=msg.get("model"),
+                        timestamp=self._ensure_utc(
+                            datetime.fromisoformat(msg["timestamp"])
+                        ),
+                    )
+                )
+
             return Conversation(
                 conversation_id=row[0],
                 conversation_name=row[1],
                 messages=messages,
-                last_updated=self._ensure_utc(datetime.fromisoformat(row[3]))
+                last_updated=self._ensure_utc(datetime.fromisoformat(row[3])),
             )
 
     def save_conversation(self, conversation: Conversation) -> None:
         """Save or update a conversation"""
         # Ensure timestamps are UTC and prepare messages for storage
-        messages_json = json.dumps([
-            {
-                "role": msg.role,
-                "content": msg.content,  # Store content as-is, whether string or structured
-                "model": msg.model,
-                "timestamp": self._ensure_utc(msg.timestamp).isoformat()
-            }
-            for msg in conversation.messages
-        ])
+        messages_json = json.dumps(
+            [
+                {
+                    "role": msg.role,
+                    "content": msg.content,  # Store content as-is, whether string or structured
+                    "model": msg.model,
+                    "timestamp": self._ensure_utc(msg.timestamp).isoformat(),
+                }
+                for msg in conversation.messages
+            ]
+        )
 
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
@@ -116,7 +128,7 @@ class SQLiteConversationRepository:
                     conversation.conversation_id,
                     conversation.conversation_name,
                     messages_json,
-                    self._ensure_utc(conversation.last_updated).isoformat()
-                )
+                    self._ensure_utc(conversation.last_updated).isoformat(),
+                ),
             )
-            conn.commit() 
+            conn.commit()
