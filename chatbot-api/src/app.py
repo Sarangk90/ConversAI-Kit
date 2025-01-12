@@ -5,8 +5,8 @@ import json
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 
-from chat import get_bot_response, generate_conversation_name, get_bot_response_stream
-from database import init_db, save_conversation, get_conversations, get_conversation
+from src.chat import get_bot_response, generate_conversation_name, get_bot_response_stream
+from src.database import init_db, save_conversation, get_conversations, get_conversation
 from datetime import datetime, timezone
 
 app = Flask(__name__)

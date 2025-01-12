@@ -1,6 +1,6 @@
 import pytest
 from flask import json
-from app import app
+from src.app import app
 from unittest.mock import patch, MagicMock
 from datetime import datetime, timezone
 
@@ -14,12 +14,12 @@ def client():
 @pytest.fixture
 def mock_services():
     """Mock all external services (chat and database)"""
-    with patch('app.get_bot_response') as mock_chat, \
-         patch('app.generate_conversation_name') as mock_name_gen, \
-         patch('app.get_bot_response_stream') as mock_stream, \
-         patch('app.save_conversation') as mock_save, \
-         patch('app.get_conversations') as mock_get_all, \
-         patch('app.get_conversation') as mock_get_one:
+    with patch('src.app.get_bot_response') as mock_chat, \
+         patch('src.app.generate_conversation_name') as mock_name_gen, \
+         patch('src.app.get_bot_response_stream') as mock_stream, \
+         patch('src.app.save_conversation') as mock_save, \
+         patch('src.app.get_conversations') as mock_get_all, \
+         patch('src.app.get_conversation') as mock_get_one:
         yield {
             'chat': mock_chat,
             'name_gen': mock_name_gen,

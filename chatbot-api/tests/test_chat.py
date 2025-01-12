@@ -1,12 +1,12 @@
 import pytest
 from unittest.mock import patch, MagicMock
 import os
-from chat import get_bot_response, generate_conversation_name, get_bot_response_stream, get_openai_client
+from src.chat import get_bot_response, generate_conversation_name, get_bot_response_stream, get_openai_client
 
 @pytest.fixture
 def mock_openai():
     """Mock OpenAI client for testing"""
-    with patch('chat.client') as mock_client:
+    with patch('src.chat.client') as mock_client:
         yield mock_client
 
 def test_client_should_require_api_key():

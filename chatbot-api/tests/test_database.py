@@ -2,7 +2,7 @@ import pytest
 import sqlite3
 import os
 from datetime import datetime
-from database import init_db, save_conversation, get_conversations, get_conversation
+from src.database import init_db, save_conversation, get_conversations, get_conversation
 
 # Test database file
 TEST_DB = 'test_conversations.db'
@@ -10,7 +10,7 @@ TEST_DB = 'test_conversations.db'
 @pytest.fixture(autouse=True)
 def setup_test_db(monkeypatch):
     """Set up a test database before each test"""
-    monkeypatch.setattr('database.DB_NAME', TEST_DB)
+    monkeypatch.setattr('src.database.DB_NAME', TEST_DB)
     init_db()
     yield
     if os.path.exists(TEST_DB):
