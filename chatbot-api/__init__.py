@@ -1,1 +1,1 @@
-"""Package initialization file""" 
+"""ChatBot API package""" 
