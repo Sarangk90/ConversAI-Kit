@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Sidebar.css';
 
+interface Conversation {
+    conversation_id: string;
+    conversation_name: string;
+    last_updated: string;
+}
+
+interface SidebarProps {
+    conversations: Conversation[];
+    onSelectConversation: (conversationId: string) => void;
+    onNewConversation: () => void;
+    currentConversationId: string | null;
+}
+
+type GroupedConversations = {
+    [key: string]: Conversation[];
+};
+
 // Utility function to format conversation date
-const getConversationGrouping = (lastUpdated) => {
+const getConversationGrouping = (lastUpdated: string): string => {
     const now = new Date();
     const conversationDate = new Date(lastUpdated);
     const oneDayInMs = 24 * 60 * 60 * 1000;
 
     const isToday = now.toDateString() === conversationDate.toDateString();
-    const isYesterday = (now - conversationDate) < oneDayInMs * 2 && !isToday;
-    const withinLast7Days = (now - conversationDate) < oneDayInMs * 7 && !isToday && !isYesterday;
+    const isYesterday = (now.getTime() - conversationDate.getTime()) < oneDayInMs * 2 && !isToday;
+    const withinLast7Days = (now.getTime() - conversationDate.getTime()) < oneDayInMs * 7 && !isToday && !isYesterday;
 
     if (isToday) return "Today";
     if (isYesterday) return "Yesterday";
@@ -18,8 +35,8 @@ const getConversationGrouping = (lastUpdated) => {
 };
 
 // Group conversations based on Today, Yesterday, Previous 7 Days, and Older
-const groupConversationsByDate = (conversations) => {
-    return conversations.reduce((grouped, conversation) => {
+const groupConversationsByDate = (conversations: Conversation[]): GroupedConversations => {
+    return conversations.reduce((grouped: GroupedConversations, conversation) => {
         const group = getConversationGrouping(conversation.last_updated);
         if (!grouped[group]) grouped[group] = [];
         grouped[group].push(conversation);
@@ -27,17 +44,25 @@ const groupConversationsByDate = (conversations) => {
     }, {});
 };
 
-const Sidebar = ({ conversations, onSelectConversation, onNewConversation, currentConversationId }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+    conversations, 
+    onSelectConversation, 
+    onNewConversation, 
+    currentConversationId 
+}) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const groupedConversations = groupConversationsByDate(conversations);
 
     // Add event listener to handle class changes
     useEffect(() => {
         const sidebarElement = document.querySelector('.sidebar');
+        if (!sidebarElement) return;
+
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class') {
-                    setIsCollapsed(sidebarElement.classList.contains('collapsed'));
+                    const element = mutation.target as HTMLElement;
+                    setIsCollapsed(element.classList.contains('collapsed'));
                 }
             });
         });
@@ -111,4 +136,4 @@ const Sidebar = ({ conversations, onSelectConversation, onNewConversation, curre
     );
 };
 
-export default Sidebar;
+export default Sidebar; 

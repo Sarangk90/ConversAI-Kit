@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import MessageBubble, { Message, MessageContent } from './MessageBubble';
+import MessageBubble, { Message } from './MessageBubble';
 import '../styles/ChatWindow.css';
 import botAvatar from '../assets/bot-avatar.png';
 
 interface ChatWindowProps {
-    messages: Message[];
+    messages?: Message[];
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ messages = [] }) => {
@@ -21,7 +21,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages = [] }) => {
     }, []);
 
     // Debounced scroll handler
-    const handleScroll = useCallback(() => {
+    const handleScroll = useCallback((): void => {
         if (!chatWindowRef.current) return;
         const shouldShowButton = !isUserNearBottom();
         if (shouldShowButton !== showScrollButton) {
@@ -30,7 +30,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ messages = [] }) => {
     }, [isUserNearBottom, showScrollButton]);
 
     // Optimized scroll to bottom
-    const scrollToBottom = useCallback(() => {
+    const scrollToBottom = useCallback((): void => {
         if (chatWindowRef.current) {
             chatWindowRef.current.scrollTo({
                 top: chatWindowRef.current.scrollHeight,
