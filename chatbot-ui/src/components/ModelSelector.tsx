@@ -1,13 +1,11 @@
 import React from 'react';
 import '../styles/ModelSelector.css';
 
-// Define available model types
-type ModelId = 'claude-3-5-sonnet' | 'gpt-4o' | 'o1-preview' | 'o1-mini';
+export type ModelId = 'claude-3-5-sonnet' | 'gpt-4o' | 'o1-preview' | 'o1-mini';
 
-// Props interface
 interface ModelSelectorProps {
-  selectedModel: ModelId;
-  onModelChange: (model: ModelId) => void;
+    selectedModel: ModelId;
+    onModelChange: (model: ModelId) => void;
 }
 
 // Model names mapping with strict types

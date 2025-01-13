@@ -7,11 +7,11 @@ import '../styles/MessageBubble.css';
 import botAvatar from '../assets/bot-avatar.png';
 
 // Types for message content
-type ImageUrl = {
+export type ImageUrl = {
   url: string;
 };
 
-type MessageContent = {
+export type MessageContent = {
   type: 'text';
   text: string;
 } | {
@@ -19,7 +19,7 @@ type MessageContent = {
   image_url: ImageUrl;
 };
 
-interface Message {
+export interface Message {
   role: 'user' | 'assistant';
   content: string | MessageContent[];
 }
