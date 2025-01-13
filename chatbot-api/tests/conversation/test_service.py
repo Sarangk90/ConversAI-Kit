@@ -81,6 +81,32 @@ def test_save_conversation(conversation_service):
     assert saved_conv.last_updated.tzinfo is not None  # Should be timezone-aware
 
 
+def test_update_existing_conversation(conversation_service):
+    # Create and save initial conversation
+    initial_conv = Conversation(
+        conversation_id="test-id",
+        conversation_name="Initial Name",
+        messages=[],
+        last_updated=datetime.now(timezone.utc),
+    )
+    conversation_service.save_conversation(initial_conv)
+
+    # Update the conversation with new name
+    updated_conv = Conversation(
+        conversation_id="test-id",
+        conversation_name="Updated Name",
+        messages=[],
+        last_updated=datetime.now(timezone.utc),
+    )
+    conversation_service.save_conversation(updated_conv)
+
+    # Retrieve and verify the update
+    saved_conv = conversation_service.get_conversation("test-id")
+    assert saved_conv is not None
+    assert saved_conv.conversation_id == "test-id"
+    assert saved_conv.conversation_name == "Updated Name"
+
+
 def test_generate_name(conversation_service):
     # Generate name
     name = conversation_service.generate_name("Hello, how are you?")
