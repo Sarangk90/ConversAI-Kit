@@ -7,10 +7,7 @@ module.exports = {
   },
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest'
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(react-markdown|vfile|vfile-message|unist-.*|unified|bail|is-plain-obj|trough|remark-.*|mdast-util-.*|micromark.*|decode-named-character-reference|character-entities|property-information|hast-util-whitespace|space-separated-tokens|comma-separated-tokens|pretty-bytes|ccount)/)',
-  ],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts']
 }; 

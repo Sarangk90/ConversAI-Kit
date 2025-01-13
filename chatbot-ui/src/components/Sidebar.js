@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Sidebar.css';
-import pencilIcon from '../assets/pencil-icon.png';
 
 // Utility function to format conversation date
 const getConversationGrouping = (lastUpdated) => {

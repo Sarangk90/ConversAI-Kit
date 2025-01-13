@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import Sidebar from './Sidebar';
 import ChatWindow from './ChatWindow';
 import MessageInput from './MessageInput';
@@ -29,6 +29,45 @@ function App() {
     const location = useLocation(); // Access the URL parameters
     const navigate = useNavigate();   // To update the URL
 
+    // Define fetchConversationsFromBackend with useCallback before using it in useEffect
+    const fetchConversationsFromBackend = useCallback(async () => {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}`);
+            const conversationsData = await response.json();
+
+            // Sort conversations by lastUpdated in descending order
+            const sortedConversations = sortConversationsByLastUpdated(conversationsData);
+
+            setConversations(sortedConversations);
+        } catch (error) {
+            console.error('Error fetching conversations:', error);
+        }
+    }, []);
+
+    // Define fetchMessagesForConversation with useCallback
+    const fetchMessagesForConversation = useCallback(async (conversationId) => {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}/${conversationId}`);
+            const data = await response.json();
+
+            // Update messagesByConversation
+            setMessagesByConversation((prev) => ({
+                ...prev,
+                [conversationId]: data.messages || [],
+            }));
+
+            // Update messages and conversation name if still viewing this conversation
+            if (conversationId === currentConversationId) {
+                setMessages(data.messages || []);
+                setCurrentConversationName(data.conversation_name || 'New Conversation');
+            }
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            setMessages([]);
+            setCurrentConversationName('New Conversation');
+        }
+    }, [currentConversationId]);
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const conversationId = params.get('conversation_id');
@@ -38,10 +77,9 @@ function App() {
         }
     }, [location]);
 
-
     useEffect(() => {
         fetchConversationsFromBackend();
-    }, []);
+    }, [fetchConversationsFromBackend]);
 
     // useEffect to load messages when currentConversationId changes
     useEffect(() => {
@@ -63,46 +101,7 @@ function App() {
                 setCurrentConversationName('New Conversation');
             }
         }
-    }, [currentConversationId, messagesByConversation, conversations]);
-
-    // Fetch all conversations (IDs and names) from the backend
-    const fetchConversationsFromBackend = async () => {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}`);
-            const conversationsData = await response.json();
-
-            // Sort conversations by lastUpdated in descending order
-            const sortedConversations = sortConversationsByLastUpdated(conversationsData);
-
-            setConversations(sortedConversations);
-        } catch (error) {
-            console.error('Error fetching conversations:', error);
-        }
-    };
-
-    // Fetch messages for a specific conversation from the backend
-    const fetchMessagesForConversation = async (conversationId) => {
-        try {
-            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.CONVERSATIONS}/${conversationId}`);
-            const data = await response.json();
-
-            // Update messagesByConversation
-            setMessagesByConversation((prev) => ({
-                ...prev,
-                [conversationId]: data.messages || [],
-            }));
-
-            // Update messages and conversation name if still viewing this conversation
-            if (conversationId === currentConversationId) {
-                setMessages(data.messages || []);
-                setCurrentConversationName(data.conversation_name || 'New Conversation');
-            }
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-            setMessages([]);
-            setCurrentConversationName('New Conversation');
-        }
-    };
+    }, [currentConversationId, messagesByConversation, conversations, fetchMessagesForConversation]);
 
     const saveConversationToBackend = async (conversation) => {
         try {

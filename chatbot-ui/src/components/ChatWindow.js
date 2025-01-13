@@ -1,7 +1,7 @@
 // ChatWindow.js
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import MessageBubble from './MessageBubble';
+import MessageBubble from './MessageBubble.tsx';
 import '../styles/ChatWindow.css';
 import botAvatar from '../assets/bot-avatar.png';
 
