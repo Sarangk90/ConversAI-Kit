@@ -24,6 +24,7 @@ export interface Message {
   content: string | MessageContent[];
   model?: string;
   timestamp?: string;
+  loading?: boolean;
 }
 
 interface MessageBubbleProps {
@@ -100,119 +101,129 @@ const MessageBubble: React.FC<MessageBubbleProps> = React.memo(({ message, role 
       {!isUser && (
         <img src={botAvatar} alt="bot avatar" className="avatar" />
       )}
-      <div className={`message-bubble ${isUser ? 'user' : 'bot'}`}>
-        {images.length > 0 && (
-          <div className="message-images">
-            {images.map((image, index) => (
-              <div 
-                key={index} 
-                className="message-image"
-                onClick={() => handleImageClick(image)}
-              >
-                <img src={image} alt={`User uploaded ${index + 1}`} />
+      <div className={`message-bubble ${isUser ? 'user' : 'bot'} ${message.loading ? 'loading' : ''}`}>
+        {message.loading ? (
+          <div className="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        ) : (
+          <>
+            {images.length > 0 && (
+              <div className="message-images">
+                {images.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className="message-image"
+                    onClick={() => handleImageClick(image)}
+                  >
+                    <img src={image} alt={`User uploaded ${index + 1}`} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-        {text && (
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || '');
-                const codeString = String(children).replace(/\n$/, '');
+            )}
+            {text && (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || '');
+                    const codeString = String(children).replace(/\n$/, '');
 
-                if (!inline && match) {
-                  const lineNumber = node?.position?.start.line;
-                  return (
-                    <div className="code-block-wrapper">
-                      <div className="code-block-header">
-                        <span className="code-block-language">
-                          {match[1]}
-                        </span>
-                        <button
-                          className="copy-button"
-                          onClick={() => lineNumber && copyToClipboard(codeString, lineNumber)}
-                          title={copiedIndex === lineNumber ? 'Copied!' : 'Copy code'}
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            {copiedIndex === lineNumber ? (
-                              <path d="M20 6L9 17l-5-5" />
-                            ) : (
-                              <>
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                              </>
-                            )}
-                          </svg>
-                        </button>
-                      </div>
-                      <div className="syntax-highlighter-wrapper">
-                        <SyntaxHighlighter
-                          style={oneDark}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}
-                          customStyle={{
-                            margin: 0,
-                            background: '#282c34',
-                            padding: '16px',
-                          }}
-                        >
-                          {codeString}
-                        </SyntaxHighlighter>
-                      </div>
-                    </div>
-                  );
-                }
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                );
-              },
-            }}
-          >
-            {text}
-          </ReactMarkdown>
-        )}
-        {!isUser && (
-          <div className="message-actions">
-            <button
-              className="message-copy-button"
-              onClick={copyMessage}
-              title={copiedMessage ? 'Copied!' : 'Copy response'}
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                    if (!inline && match) {
+                      const lineNumber = node?.position?.start.line;
+                      return (
+                        <div className="code-block-wrapper">
+                          <div className="code-block-header">
+                            <span className="code-block-language">
+                              {match[1]}
+                            </span>
+                            <button
+                              className="copy-button"
+                              onClick={() => lineNumber && copyToClipboard(codeString, lineNumber)}
+                              title={copiedIndex === lineNumber ? 'Copied!' : 'Copy code'}
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                {copiedIndex === lineNumber ? (
+                                  <path d="M20 6L9 17l-5-5" />
+                                ) : (
+                                  <>
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                  </>
+                                )}
+                              </svg>
+                            </button>
+                          </div>
+                          <div className="syntax-highlighter-wrapper">
+                            <SyntaxHighlighter
+                              style={oneDark}
+                              language={match[1]}
+                              PreTag="div"
+                              {...props}
+                              customStyle={{
+                                margin: 0,
+                                background: '#282c34',
+                                padding: '16px',
+                              }}
+                            >
+                              {codeString}
+                            </SyntaxHighlighter>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
               >
-                {copiedMessage ? (
-                  <path d="M20 6L9 17l-5-5" />
-                ) : (
-                  <>
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </>
-                )}
-              </svg>
-            </button>
-          </div>
+                {text}
+              </ReactMarkdown>
+            )}
+            {!isUser && (
+              <div className="message-actions">
+                <button
+                  className="message-copy-button"
+                  onClick={copyMessage}
+                  title={copiedMessage ? 'Copied!' : 'Copy response'}
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {copiedMessage ? (
+                      <path d="M20 6L9 17l-5-5" />
+                    ) : (
+                      <>
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </>
+                    )}
+                  </svg>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
       {selectedImage && (

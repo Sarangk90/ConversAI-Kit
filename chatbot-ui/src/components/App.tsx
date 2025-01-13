@@ -21,6 +21,7 @@ interface Message {
     content: string | MessageContent[];
     model?: string;
     timestamp?: string;
+    loading?: boolean;
 }
 
 interface ImageUrl {
@@ -65,6 +66,31 @@ const API_CONFIG: ApiConfig = {
         GENERATE_NAME: '/api/generate_name',
         STREAM_CHAT: '/chat/stream'
     }
+};
+
+// Helper function to clean message content
+const cleanMessageContent = (content: string | MessageContent[]): string | MessageContent[] => {
+    if (Array.isArray(content)) {
+        const cleanedContent = content.filter(item => 
+            item.type === 'image_url' || (item.type === 'text' && item.text.trim() !== '')
+        );
+        return cleanedContent.length > 0 ? cleanedContent : '';
+    }
+    return content.trim();
+};
+
+// Helper function to prepare messages for API
+const prepareMessagesForAPI = (messages: Message[], model: string): Message[] => {
+    return messages
+        .map(msg => ({
+            role: msg.role,
+            content: cleanMessageContent(msg.content),
+            model: msg.model || model
+        }))
+        .filter(msg => {
+            const content = msg.content;
+            return Array.isArray(content) ? content.length > 0 : content !== '';
+        });
 };
 
 function App() {
@@ -301,12 +327,23 @@ function App() {
         setAbortController(controller);
 
         try {
+            const assistantMessage: Message = { 
+                role: 'assistant', 
+                content: '',
+                loading: true,
+                model: model
+            };
+            updatedMessages.push(assistantMessage);
+            updateMessagesInUI(conversationId, updatedMessages);
+
+            const cleanMessages = prepareMessagesForAPI(updatedMessages, model);
+
             const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.STREAM_CHAT}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     conversation_id: conversationId,
-                    messages: updatedMessages,
+                    messages: cleanMessages,
                     model: model,
                 }),
                 signal: controller.signal,
@@ -316,8 +353,10 @@ function App() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const assistantMessage: Message = { role: 'assistant', content: '' };
-            updatedMessages.push(assistantMessage);
+            // Remove loading state once we start receiving the response
+            assistantMessage.loading = false;
+            assistantMessage.content = '';
+            updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
 
             const throttledUpdate = throttleUpdate((messages: Message[]) => {
                 updateMessagesInUI(conversationId, messages);
@@ -344,8 +383,16 @@ function App() {
         } catch (error) {
             if (error instanceof Error && error.name === 'AbortError') {
                 console.log('Stream aborted');
+                updatedMessages.pop();
+                updateMessagesInUI(conversationId, updatedMessages);
             } else {
                 handleError(error as Error, 'Error during streaming');
+                const lastMessage = updatedMessages[updatedMessages.length - 1];
+                if (lastMessage?.loading) {
+                    lastMessage.loading = false;
+                    lastMessage.content = 'Error: Failed to get response from the server.';
+                    updateMessagesInUI(conversationId, updatedMessages);
+                }
             }
             return updatedMessages;
         } finally {
