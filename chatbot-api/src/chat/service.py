@@ -35,6 +35,7 @@ class ChatService:
         self,
         text: str = "",
         images: List[str] = None,
+        model: str = None,
         conversation_messages: List[Message] = None,
     ) -> AsyncIterator[str]:
         """Stream response for a message with optional images"""
@@ -49,7 +50,8 @@ class ChatService:
         else:
             content = text
 
-        messages.append(Message(role="user", content=content))
+        # Add the current message with the selected model
+        messages.append(Message(role="user", content=content, model=model))
 
         async for chunk in self.ai_provider.generate_stream(messages):
             yield chunk

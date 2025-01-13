@@ -84,9 +84,13 @@ async def chat(
 async def stream_chat(
     request: ChatRequestSchema, chat_service: ChatService = Depends(get_chat_service)
 ):
-    # Convert request messages to domain models
+    # Get the selected model from the last message
+    selected_model = request.messages[-1].model
+    logger.info(f"Selected model: {selected_model}")
+
+    # Convert previous messages to domain models
     messages = []
-    for msg in request.messages[:-1]:  # All messages except the last one
+    for msg in request.messages[:-1]:
         if isinstance(msg.content, str):
             content = msg.content
         else:
@@ -98,22 +102,18 @@ async def stream_chat(
                 )
                 for c in msg.content
             ]
-        messages.append(
-            Message(
-                role=msg.role,
-                content=content,
-                model=msg.model,
-                timestamp=msg.timestamp or datetime.utcnow(),
-            )
-        )
+        messages.append(Message(role=msg.role, content=content))
 
-    # Extract content from the last message
+    # Extract content from the last message and create it with the selected model
     text, images = extract_message_content(request.messages[-1])
 
     async def generate():
         try:
             async for chunk in chat_service.stream_response(
-                text=text, images=images, conversation_messages=messages
+                text=text,
+                images=images,
+                model=selected_model,
+                conversation_messages=messages
             ):
                 yield f"data: {json.dumps({'content': chunk})}\n\n"
         except Exception as e:

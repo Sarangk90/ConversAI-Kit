@@ -38,11 +38,8 @@ class OpenAIProvider:
 
     def generate_response(self, messages: List[Message]) -> ChatResponse:
         """Generate a response for messages"""
-        # Use the model from the last message, or default to claude-3-5-sonnet
-        model = next(
-            (m.model for m in reversed(messages) if m.model), "claude-3-5-sonnet"
-        )
-
+        # Use the model from the latest message
+        model = messages[-1].model if messages and messages[-1].model else "claude-3-5-sonnet"
         formatted_messages = [self._format_message(m) for m in messages]
         response = self.client.chat.completions.create(
             model=model, messages=formatted_messages
@@ -50,19 +47,17 @@ class OpenAIProvider:
 
         return ChatResponse(
             content=response.choices[0].message.content,
-            model=response.model,
+            model=model,
             timestamp=datetime.utcnow(),
         )
 
     async def generate_stream(self, messages: List[Message]) -> AsyncIterator[str]:
         """Stream response for messages"""
         try:
-            # Use the model from the last message, or default to claude-3-5-sonnet
-            model = next(
-                (m.model for m in reversed(messages) if m.model), "claude-3-5-sonnet"
-            )
-
+            model = messages[-1].model
+            logger.info(f"Using model: {model}")
             formatted_messages = [self._format_message(m) for m in messages]
+            
             stream = self.client.chat.completions.create(
                 model=model, messages=formatted_messages, stream=True
             )

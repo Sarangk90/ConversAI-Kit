@@ -48,6 +48,7 @@ class ConversationService:
                         role="user",
                         content=prompt,
                         timestamp=datetime.now(timezone.utc),
+                        model="gpt-4o-mini",
                     )
                 ]
             )

@@ -22,6 +22,8 @@ export type MessageContent = {
 export interface Message {
   role: 'user' | 'assistant';
   content: string | MessageContent[];
+  model?: string;
+  timestamp?: string;
 }
 
 interface MessageBubbleProps {
