@@ -7,7 +7,7 @@ import React, {
     useImperativeHandle,
   } from 'react';
   import '../styles/MessageInput.css';
-  import ModelSelector from './ModelSelector';
+  import ModelSelector from './ModelSelector.tsx';
   
   const MessageInput = forwardRef(({ onSend, onStop }, ref) => {
     const [input, setInput] = useState('');
