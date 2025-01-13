@@ -9,6 +9,7 @@
     box-sizing: border-box;
     margin: 0 auto;
     gap: 10px;
+    position: relative;
 }
 
 .input-container {
@@ -19,6 +20,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 8px;
+    width: 100%;
 }
 
 .message-input .model-selector {
