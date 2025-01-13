@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional, Union, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 @dataclass
@@ -20,11 +20,11 @@ class Message:
     role: str
     content: Union[str, List[Union[TextContent, ImageContent]]]
     model: Optional[str] = None
-    timestamp: datetime = datetime.utcnow()
+    timestamp: datetime = datetime.now(timezone.utc)
 
 
 @dataclass
 class ChatResponse:
     content: str
     model: str
-    timestamp: datetime = datetime.utcnow()
+    timestamp: datetime = datetime.now(timezone.utc)

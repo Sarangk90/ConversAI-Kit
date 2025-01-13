@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from ..chat.models import Message
 
@@ -11,7 +11,7 @@ class Conversation:
     conversation_id: str
     conversation_name: str
     messages: List[Message]
-    last_updated: datetime = datetime.utcnow()
+    last_updated: datetime = datetime.now(timezone.utc)
 
 
 @dataclass
