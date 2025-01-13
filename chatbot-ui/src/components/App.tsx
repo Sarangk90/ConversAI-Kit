@@ -383,8 +383,16 @@ function App() {
         } catch (error) {
             if (error instanceof Error && error.name === 'AbortError') {
                 console.log('Stream aborted');
-                updatedMessages.pop();
-                updateMessagesInUI(conversationId, updatedMessages);
+                // Instead of removing the message, just mark it as not loading
+                const lastMessage = updatedMessages[updatedMessages.length - 1];
+                if (lastMessage) {
+                    lastMessage.loading = false;
+                    // Only keep the message if it has content
+                    if (!lastMessage.content || (typeof lastMessage.content === 'string' && lastMessage.content.trim() === '')) {
+                        lastMessage.content = '[Message stream stopped]';
+                    }
+                    updateMessagesInUI(conversationId, updatedMessages);
+                }
             } else {
                 handleError(error as Error, 'Error during streaming');
                 const lastMessage = updatedMessages[updatedMessages.length - 1];

@@ -218,26 +218,23 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(({ onSend, o
                 <button
                     onClick={isProcessing ? onStop : handleSend}
                     disabled={(!input.trim() && imagePreviews.length === 0) && !isProcessing}
+                    className={isProcessing ? 'stop-button' : ''}
                 >
                     {isProcessing ? (
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            height="24"
-                            width="24"
                             viewBox="0 0 24 24"
-                            fill="#FF3B30"
+                            fill="currentColor"
                         >
-                            <path d="M19 13H5v-2h14v2z" />
+                            <rect x="7" y="7" width="10" height="10" />
                         </svg>
                     ) : (
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            height="24"
-                            width="24"
                             viewBox="0 0 24 24"
-                            fill="#007AFF"
+                            fill="currentColor"
                         >
-                            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+                            <path d="M20 12l-6-6v3.5c-7 1-8.5 6.5-9 11.5 2-5 6-6 9-6V19l6-7z" />
                         </svg>
                     )}
                 </button>

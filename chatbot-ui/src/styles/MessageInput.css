@@ -15,11 +15,11 @@
 .input-container {
     display: flex;
     gap: 8px;
-    align-items: flex-end;
+    align-items: center;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 8px;
+    padding: 8px 12px;
     width: 100%;
 }
 
@@ -79,37 +79,42 @@
 
 .message-input textarea {
     flex: 1;
-    padding: 10px 15px;
+    padding: 0;
     font-size: 16px;
     resize: none;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    background-color: #f7f7f8;
-    min-height: 40px;
-    max-height: 240px;
+    border: none;
+    background: transparent;
+    min-height: 24px;
+    max-height: 200px;
     box-sizing: border-box;
     overflow: auto;
+    line-height: 1.5;
+    margin: 0;
 }
 
 .message-input textarea:focus {
     outline: none;
-    border-color: #007aff;
 }
 
 .message-input button {
-    background-color: transparent;
+    background: none;
     border: none;
-    cursor: pointer;
     padding: 8px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
 }
 
 .message-input button:disabled {
-    cursor: not-allowed;
     opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.message-input button:not(:disabled):hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Send and Stop icons */
@@ -117,6 +122,66 @@
     width: 24px;
     height: 24px;
     transition: all 0.2s ease;
+}
+
+/* Specific styles for the stop button */
+.message-input button.stop-button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message-input button.stop-button:hover {
+    background-color: #e5e5e5;
+}
+
+.message-input button.stop-button svg {
+    width: 30px;
+    height: 30px;
+    fill: #1a1a1a;
+    stroke: none;
+}
+
+/* Send button styles */
+.message-input button:not(.stop-button):not(.upload-button) {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin-left: 4px;
+}
+
+.message-input button:not(.stop-button):not(.upload-button):disabled {
+    background: none;
+}
+
+.message-input button:not(.stop-button):not(.upload-button):not(:disabled) {
+    background: #007AFF;
+    color: white;
+}
+
+.message-input button:not(.stop-button):not(.upload-button):not(:disabled):hover {
+    background: #0056b3;
+}
+
+.message-input button:not(.stop-button):not(.upload-button) svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    color: #d1d5db;
+}
+
+.message-input button:not(.stop-button):not(.upload-button):not(:disabled) svg {
+    color: white;
 }
 
 .upload-button {
