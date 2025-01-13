@@ -119,16 +119,40 @@ class SQLiteConversationRepository:
         )
 
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                """
-                INSERT OR REPLACE INTO conversations (conversation_id, conversation_name, messages, last_updated)
-                VALUES (?, ?, ?, ?)
-                """,
-                (
-                    conversation.conversation_id,
-                    conversation.conversation_name,
-                    messages_json,
-                    self._ensure_utc(conversation.last_updated).isoformat(),
-                ),
+            # Check if the conversation already exists
+            cursor = conn.execute(
+                "SELECT id FROM conversations WHERE conversation_id = ?",
+                (conversation.conversation_id,)
             )
+            existing_conversation = cursor.fetchone()
+
+            if existing_conversation:
+                # Update existing conversation
+                conn.execute(
+                    """
+                    UPDATE conversations 
+                    SET conversation_name = ?, messages = ?, last_updated = ?
+                    WHERE conversation_id = ?
+                    """,
+                    (
+                        conversation.conversation_name,
+                        messages_json,
+                        self._ensure_utc(conversation.last_updated).isoformat(),
+                        conversation.conversation_id,
+                    ),
+                )
+            else:
+                # Insert new conversation
+                conn.execute(
+                    """
+                    INSERT INTO conversations (conversation_id, conversation_name, messages, last_updated)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (
+                        conversation.conversation_id,
+                        conversation.conversation_name,
+                        messages_json,
+                        self._ensure_utc(conversation.last_updated).isoformat(),
+                    ),
+                )
             conn.commit()
