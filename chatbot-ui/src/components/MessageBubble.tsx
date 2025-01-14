@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/MessageBubble.css';
-import botAvatar from '../assets/bot-avatar.png';
+import botAvatar from '../assets/bot-icon.svg';
 
 // Types for message content
 export type ImageUrl = {

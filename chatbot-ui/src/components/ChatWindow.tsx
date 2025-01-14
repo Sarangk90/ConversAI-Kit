@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import MessageBubble, { Message } from './MessageBubble';
 import '../styles/ChatWindow.css';
-import botAvatar from '../assets/bot-avatar.png';
+import botAvatar from '../assets/bot-icon.svg';
 
 interface ChatWindowProps {
     messages?: Message[];
