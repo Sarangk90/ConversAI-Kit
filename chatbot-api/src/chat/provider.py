@@ -17,9 +17,10 @@ class AIProvider(Protocol):
 class OpenAIProvider:
     """OpenAI implementation of AIProvider"""
 
-    def __init__(self, api_key: str, api_base: str | None = None):
+    def __init__(self, api_key: str, api_base: str | None = None, groq_api_key: str | None = None, groq_api_base: str | None = None, github_api_key: str | None = None, github_api_base: str | None = None):
         self.client = OpenAI(api_key=api_key, base_url=api_base)
-
+        self.groq_client = OpenAI(api_key=groq_api_key, base_url=groq_api_base)
+        self.github_client = OpenAI(api_key=github_api_key, base_url=github_api_base)
     def _format_message(self, message: Message) -> dict:
         """Format message for OpenAI API"""
         if isinstance(message.content, str):
@@ -41,9 +42,18 @@ class OpenAIProvider:
         # Use the model from the latest message
         model = messages[-1].model if messages and messages[-1].model else "claude-3-5-sonnet"
         formatted_messages = [self._format_message(m) for m in messages]
-        response = self.client.chat.completions.create(
-            model=model, messages=formatted_messages
-        )
+        if model == "deepseek-r1-distill-llama-70b":  
+            response = self.groq_client.chat.completions.create(
+                model=model, messages=formatted_messages
+            )
+        elif model == "Deepseek-r1":
+            response = self.github_client.chat.completions.create(
+                model=model, messages=formatted_messages
+            )
+        else:
+            response = self.client.chat.completions.create(
+                model=model, messages=formatted_messages
+            )
 
         return ChatResponse(
             content=response.choices[0].message.content,
@@ -58,9 +68,18 @@ class OpenAIProvider:
             logger.info(f"Using model: {model}")
             formatted_messages = [self._format_message(m) for m in messages]
             
-            stream = self.client.chat.completions.create(
-                model=model, messages=formatted_messages, stream=True
-            )
+            if model == "deepseek-r1-distill-llama-70b":
+                stream = self.groq_client.chat.completions.create(
+                    model=model, messages=formatted_messages, stream=True
+                )
+            elif model == "Deepseek-r1":
+                stream = self.github_client.chat.completions.create(
+                    model=model, messages=formatted_messages, stream=True
+                )
+            else:
+                stream = self.client.chat.completions.create(
+                    model=model, messages=formatted_messages, stream=True
+                )
 
             for chunk in stream:
                 if chunk.choices[0].delta.content:

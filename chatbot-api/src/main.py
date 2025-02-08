@@ -38,13 +38,16 @@ app.include_router(conversation_router)
 def get_chat_service_override() -> ChatService:
     api_key = os.getenv("OPENAI_API_KEY")
     api_base = os.getenv("OPENAI_API_BASE")
-
+    groq_api_key = os.getenv("GROQ_API_KEY")
+    groq_api_base = os.getenv("GROQ_API_BASE")
+    github_api_key = os.getenv("GITHUB_API_KEY")
+    github_api_base = os.getenv("GITHUB_API_BASE")
     if not api_key:
         raise ValueError(
             "OPENAI_API_KEY environment variable is not set. Please check your .env file."
         )
 
-    ai_provider = OpenAIProvider(api_key=api_key, api_base=api_base)
+    ai_provider = OpenAIProvider(api_key=api_key, api_base=api_base, groq_api_key=groq_api_key, groq_api_base=groq_api_base, github_api_key=github_api_key, github_api_base=github_api_base)
     return ChatService(ai_provider=ai_provider)
 
 
